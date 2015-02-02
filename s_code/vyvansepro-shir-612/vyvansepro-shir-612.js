@@ -27,7 +27,6 @@ s.cookiePath="/";
 
 s.usePlugins=true
 function s_doPlugins(s) {
-//test cut start
 /* Add calls to plugins here */
 var scURL=document.location.pathname;
 var sc_URL=document.location.pathname.toLowerCase();
@@ -77,11 +76,6 @@ if(parts[3]=='binge-eating-disorder' && parts[4]!="" && parts[4]!="undefined" &&
 if(parts[3]!='binge-eating-disorder' && parts[3]!='adhd'){
     s.pageName="franchise|"+s.pageName;
 }
-//console.log("part 1 "+parts[1]);
-//console.log("part 2 "+parts[2]);
-//console.log("part 3 "+parts[3]);
-//console.log("part 4 "+parts[4]);
-//console.log("part 5 "+parts[5]);
 
 if(typeof(s.prop1)!="undefined" && typeof(scCat)!="undefined"){
 s.prop2=s.prop1 + scCat;
@@ -219,7 +213,6 @@ else if(parts[3] != "" && parts[3] !="undefined" ){
 if(parts[3]=='binge-eating-disorder' && parts[4]!="" && parts[4]!="undefined" && parts[5]!="" && parts[5]!="undefined"){
     s.pageName=parts[4]+"|"+parts[5];
     s.channel=parts[3];
-    //console.log('page name 5');
 }
 if(parts[3]!='binge-eating-disorder' && parts[3]!='adhd'){
     s.pageName="franchise|"+s.pageName;
@@ -420,7 +413,6 @@ $('section#franchiseNav a').on('click',function(){
     s.linkTrackVars="eVar22"+','+scLinkCustVars;
     s.events=s.linkTrackEvents='';
     s.tl(this,'o',s.eVar22);
-    //console.log(scForTool);
 })
 //13-5
 $('div.details a[href="/formulary-coverage/"]').on('click',function(){
@@ -520,7 +512,6 @@ $('div.recognize-callout.diagnosed.screening a').on('click',function(){
 })
 //25-2
 if(s.pageName=="bed|bed resource center"){
-    //console.log('function entered');
     $('div.box div.description').on('click',function(){
         var scHead=$(this).closest(".description").find('h4').text();
         if(scHead.indexOf('Adults Brochure')>-1){
@@ -529,7 +520,6 @@ if(s.pageName=="bed|bed resource center"){
             s.events=s.linkTrackEvents='event4';
             s.tl(this,'d',s.eVar20);
         }
-        //console.log(scHead);
     })
 }
 
@@ -619,7 +609,6 @@ $('input[type="text"]').on('blur',function(){
 })
 //29-6 form field populated - dropdowns
 $('select[id*="ddlState"], select[id*="ddlSpecialty"], select[id*="Patient"], select[id*="ddlInformation"]').on('blur',function(){
-    console.log('something clicked');
     var scFName="";
     var scFVal="";
     var scFName="";
@@ -635,7 +624,6 @@ $('select[id*="ddlState"], select[id*="ddlSpecialty"], select[id*="Patient"], se
     }
 })
 function SCFormTrack(scFName,scFVal){
-    console.log('scFormTrack');
     s.eVar30=scFName;
     var scDd=scFVal;
     if(scDd.indexOf('ddlState')>-1){s.eVar34='state';}
@@ -784,7 +772,6 @@ $.fn.waitUntilExists    = function (handler, shouldRunHandlerOnce, isChild) {
 }(jQuery));
 
 function scFormCov(){
-    //console.log('tester111');
     s.eVar30="formulary coverage";
     s.prop30="D=v30";
     s.linkTrackVars="events,eVar30,prop30"+','+scLinkCustVars;
