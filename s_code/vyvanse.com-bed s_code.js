@@ -2,7 +2,7 @@
 // this file must contain a defined s_account for app meas code to run as well.
 // Must contain s = new AppMeasurement();
 // Include s.account=s_account in the Additional Configuration box within the SiteCatalyst Pageload Tag Attributes
-// library|bingeeatingdisorders|shir-593
+// library|bingeeatingdisorders|shir-594
 s = new AppMeasurement();
 
 /************************** CONFIG SECTION **************************/
@@ -27,73 +27,68 @@ s.cookiePath="/";
 s.usePlugins=true
 function s_doPlugins(s) {
     //Set Indication into eVar55
-        s.eVar56="bed";
-    /* Add calls to plugins here */
-    var scURL=document.location.pathname;
-    //Set Site Vertical-Name
-        s.prop1="binge eating disorder";
-
-    //Configure Page Names
-    var parts = window.location.href.replace(".html","").replace("index","").replace(".aspx","").split("/"),
-        total = parts.length,
-        count = 0,
-        s_pageName = "",
-        urlPath = document.URL.toLowerCase();
-    //HomePage
-    if(document.location.pathname == "/" || document.location.pathname == "/index.html"){
-      s.pageName =  s.prop1 + ' > ' + ' > ' + "global" + ' > ' + "home".toLowerCase();
-      s.channel =  s.prop1 + ' > ' + "adhd".toLowerCase();
-    }
-    //SubPage
-    //else if(parts[3] == "ourCommitment" || parts[3] == "supportOfferings" ){
-     //s.pageName =  s.prop1 + ' > ' + "assure" + ' > ' + "global" + ' > ' + parts[3].toLowerCase();
-     //s.channel =  s.prop1 + ' > ' + "assure".toLowerCase();
-    //}
-    //Hcc&Hcp Home
-    else if(parts[5] == "" ){
-        s.pageName =  "home" + s.prop1 + ' > ' + parts[3] + ' > ';
-        s.channel =  s.prop1 + ' > ' + parts[3]  + ' > ';
-    }
-    //Search
-    if(document.location.pathname.indexOf('/searchResults.htm') > -1){
-         s.pageName =  s.prop1 + ' > ' + parts[4] + ' > ' + parts[3] + ' > ' + "search" .toLowerCase();
-     s.channel =  s.prop1 + ' > ' + parts[4]  + ' > ' + parts[3].toLowerCase();
-    }
-    //Hcc&Hcp  Sub
-    else if(parts[5] != "" || parts[5] !="undefined" ){
-     s.pageName = parts[3];
-    }
+    s.eVar56="bed";
+/* Add calls to plugins here */
+var scURL=document.location.pathname;
+//Set Site Vertical-Name
+    s.prop1="Binge Eating Disorder";
+    if(s.prop1)
+        s.eVar45="DTC_"+s.prop1;
+//Configure Page Names
+var parts = window.location.href.replace(".html","").replace("index","").replace(".aspx","").split("/"),
+    total = parts.length,
+    count = 0,
+    s_pageName = "",
+    urlPath = document.URL.toLowerCase();
+//HomePage
+if(document.location.pathname == "/" || document.location.pathname == "/index.html"){
+  s.pageName =  s.prop1 + ' > ' + ' > ' + "global" + ' > ' + "home".toLowerCase();
+  s.channel =  s.prop1 + ' > ' + "adhd".toLowerCase();
+}
+//Assure SubPage
+//else if(parts[3] == "ourCommitment" || parts[3] == "supportOfferings" ){
+ //s.pageName =  s.prop1 + ' > ' + "assure" + ' > ' + "global" + ' > ' + parts[3].toLowerCase();
+ //s.channel =  s.prop1 + ' > ' + "assure".toLowerCase();
+//}
+//Hcc&Hcp Home
+else if(parts[5] == "" ){
+    s.pageName =  "home" + s.prop1 + ' > ' + parts[3] + ' > ';
+    s.channel =  s.prop1 + ' > ' + parts[3]  + ' > ';
+}
+//Search
+if(document.location.pathname.indexOf('/searchResults.htm') > -1){
+     s.pageName =  s.prop1 + ' > ' + parts[4] + ' > ' + parts[3] + ' > ' + "search" .toLowerCase();
+ s.channel =  s.prop1 + ' > ' + parts[4]  + ' > ' + parts[3].toLowerCase();
+}
+//Hcc&Hcp  Sub
+else if(parts[5] != "" || parts[5] !="undefined" ){
+ s.pageName = parts[4];
+ s.channel =  parts[4];
+}
+console.log("part 1 "+parts[1]);
+console.log("part 2 "+parts[2]);
+console.log("part 3 "+parts[3]);
+console.log("part 4 "+parts[4]);
+console.log("part 5 "+parts[5]);
+//if(s.prop1)
+//s.prop2=s.prop1 + scCat;
 
     if(typeof(s.prop1)!="undefined" && typeof(scCat)!="undefined"){
         s.prop2=s.prop1 + scCat;
     }
-    if(scURL.indexOf('/about.aspx')>-1){
-        s.pageName="understanding bed";
-    }
-    if(scURL=='/'){
-        s.pageName="home page";
-    }
-    if(s.pageName=='what-is-BED'){
-        s.pageName='what is bed';
-    }
-    if(s.pageName=='questions-to-ask'){
-        s.pageName='talking with your doctor';
-    }
-    if(s.pageName=='management'){
-        s.pageName='managing bed';
-    }
-    if(s.pageName){
-        s.pageName=s.pageName.replace(/-/g, ' ')
-        s.channel=s.pageName;
-    }
+
 
     /** Visitor identification variables begin **/
     s.eVar1= s.c_r('s_vi') ? s.c_r('s_vi').match(/\|([^[]+)/) ? s.c_r('s_vi').match(/\|([^[]+)/)[1] : "Unexpected Format" : "D=vidn";
     /** Visitor identification variables end **/
 
+
+    //Get Previous Page Name
+    s.prop4=s.getPreviousValue(!!s.pageName ? s.pageName : !!s.pageType ? s.channel+" > Error Page" : '', 's_gpv_pn', '');
+
     //Traffic Source Entry Page
     if (!!s.eVar4)
-        s.prop5 = s.eVar4 + "_" + s.pageName; // Traffic Source Entry Page
+        s.prop5 = s.eVar4 + " : " + s.pageName; // Traffic Source Entry Page
     else
         s.prop5    = s.pageName; // Traffic Source Entry Page gets all page names for pathing purposes
     //Get Visit Number
@@ -112,6 +107,9 @@ function s_doPlugins(s) {
     s.prop71=bt_data('data \> report suite');
     s.prop72=bt_data('scottdeletesample');
 
+    /*Percent Page Viewed*/
+    if(s.prop4){s.prop44=s.getPercentPageViewed();}
+
     //Set Query Parameters into correct variable
     //s.getQueryParam('utm_medium');
     if(!s.eVar25)s.eVar25=s.Util.getQueryParam('utm_source');
@@ -120,10 +118,48 @@ function s_doPlugins(s) {
     if(!s.eVar28)s.eVar28=s.Util.getQueryParam('utm_term');
     if(!s.eVar29)s.eVar29=s.Util.getQueryParam('utm_creative');
 
+
+   //Internal Search
+    if(scURL.indexOf("/searchResults.html")>-1){
+        if (!s.prop16) {s.prop16=s.Util.getQueryParam("q");}
+        if(s.prop16){s.eVar16="D=c16";
+            if(document.getElementById('tipue_search_results_count')){
+            var sc_success = document.getElementById('tipue_search_results_count')
+            textContent = sc_success.textContent;
+            s.prop19 = sc_success.textContent;
+            s.eVar19="D=c19"
+            if(s.prop19){s.events="event27";}
+            }
+            if(document.getElementById('tipue_search_warning_head')){
+                var sc_success = document.getElementById('tipue_search_warning_head')
+                textContent = sc_success.textContent;
+                s.prop19 = sc_success.textContent;
+                s.eVar19="D=c19"
+                if(s.prop19){s.events="event28";}
+            }
+        }
+    }
+
+
+
+
+
     //TODO: Cristi, this is your note --> change cookie name for multiple
     s.prop7         = s.getDaysSinceLastVisit('sc_hcp_daysLastTouch');
+    if(s.pageName.indexOf('-')>-1){
+        s.pageName=s.pageName.replace(/-/g, ' ');
+    }
+    if(s.pageName=="vyvanse information"){
+        s.pageName='vyvanse for bed in adults';
+    };
+    if(s.pageName=="vyvanse information"){
+        s.pageName='vyvanse for bed in adults';
+    };
+    if(document.location.pathname=="/bed/what-is-binge-eating-disorder"){s.pageName="what is bed"};
+    if(document.location.pathname=="/bed/treatment-for-binge-eating-disorder"){s.pageName="talking with your doctor"};
+    if(document.location.pathname=='/bed/default.aspx'||document.location.pathname=='/bed/'){s.pageName='bed home page'};
 
-    /* start - channel manager */
+/* start - channel manager */
 
     //TODO: Build internal referrer logic
 
@@ -254,325 +290,10 @@ function s_doPlugins(s) {
         }
     }
     /* end - channel manager */
-        if(s.prop1){
-        s.eVar45="dtc_"+s.prop1;
-        s.prop2=s.prop1+"_dtc";
-        s.prop3=s.prop2+"_"+s.pageName;
-        //Get Previous Page Name
-        s.prop4=s.prop2+'_'+s.getPreviousValue(!!s.pageName ? s.pageName : !!s.pageType ? s.channel+" > Error Page" : '', 's_gpv_pn', '');
-        /*Percent Page Viewed*/
-        if(s.prop4){s.prop44=s.getPercentPageViewed();}
-        if(s.pageName=="default"){s.pageName="home page";}
-    }
+
  }
 s.doPlugins=s_doPlugins
 
-//Onclick code for custom click and other events - begin
-scLinkCustVars="prop1,prop2,prop4,prop5,prop6,prop7,prop8,prop9,prop10,prop11,prop12,prop14,prop24,prop41,eVar45,eVar46,eVar47";
-
-$('#s3-widget-share-tab').on('click',function(){
-    console.log(s.page)
-    s.eVar22='ssstabinteract_share';
-    s.linkTrackVars="eVar30,eVar22"+','+scLinkCustVars;
-    s.events=s.linkTrackEvents='';
-    s.tl(this,'o',s.eVar22);
-})
-$('#s3-widget-send-tab').on('click',function(){
-    s.eVar22='ssstabinteract_send';
-    s.linkTrackVars="eVar30,eVar22"+','+scLinkCustVars;
-    s.events=s.linkTrackEvents='';
-    s.tl(this,'o',s.eVar22);
-})
-$('#s3-widget-save-tab').on('click',function(){
-    s.eVar22='ssstabinteract_save';
-    s.linkTrackVars="eVar30,eVar22"+','+scLinkCustVars;
-    s.events=s.linkTrackEvents='';
-    s.tl(this,'o',s.eVar22);
-})
-
-$('input.s3-form-text').on('blur',function(){
-    var scFormName='s3 share url via email';
-    var scFormField=$(this).attr('id');
-    scFormField=scFormField.replace('s3-send-','');
-    s.linkTrackVars='events,prop30,eVar30,prop34,eVar34,prop39,eVar39'+','+scLinkCustVars;
-    s.prop30=scFormName;
-    s.eVar30="D=c30";
-    s.prop34=s.prop30+'_'+scFormField;
-    s.eVar34="D=c34";
-    s.prop39=s.prop34+'_(pii)';
-    s.eVar39="D=c39";
-    s.events=s.linkTrackEvents='event3';
-    s.tl(this,'o',scFormName+'_field name click');
-})
-
-
-$('a#s3-inter-actions-continue').on('click',function(){
-    var scLinkUrl=$(this).attr('href');
-    if(scLinkUrl.indexOf('facebook')>-1){
-    s.eVar52='social share_facebook';
-    }
-    if(scLinkUrl.indexOf('twitter')>-1){
-    s.eVar52='social share_twitter';
-    }
-    if(scLinkUrl.indexOf('pinterest')>-1){
-    s.eVar52='social share_pinterest';
-    }
-    s.linkTrackVars='eVar52,eVar53,events'+','+scLinkCustVars;
-    s.events=s.linkTrackEvents="event30";
-    s.eVar53=s.pageName;
-    s.tl(this,'o', s.eVar52);
-})
-
-//ShareSendSave Submit
-$('input[type="button"]#s3-btn-send-submit').on('click',function(){
-    s.linkTrackVars='eVar53,eVar52,events'+','+scLinkCustVars;
-    s.linkTrackEvents=s.events='event30';
-    s.eVar52='social share_email sent';
-    s.eVar53='social item shared';
-    s.tl(this,'o','social item shared');
-})
-
-//6-1
-$('a.for-hcp').on('click',function(){
-    s.eVar21='internal site exit_bed ub hcp site';
-    s.linkTrackVars='eVar21'+','+scLinkCustVars;
-    s.events='';
-    s.tl(this,'e', s.eVar21);
-})
-
-//7-1
-$('a.shire-logo').on('click',function(){
-    s.eVar21='internal site exit_shire logo';
-    s.linkTrackVars='eVar21'+','+scLinkCustVars;
-    s.tl(this,'e', s.eVar21);
-})
-
-//7-2
-$('li.last a[href="http://www.shire.com/"]').on('click',function(){
-    s.eVar21='internal site exit_shireus';
-    s.linkTrackVars='eVar21'+','+scLinkCustVars;
-    s.tl(this,'e', s.eVar21);
-})
-
-//10-2, 16-8 and 17-10
-$('a#start-conversation').on('click',function(){
-    s.eVar22='nav_doctor discussion guide call out';
-    s.linkTrackVars='eVar22'+','+scLinkCustVars;
-    s.tl(this,'o', s.eVar22);
-})
-
-//10-3
-$('a#manage-BED').on('click',function(){
-    if(s.pageName)s.pageName=s.pageName.toLowerCase();
-    s.eVar22='nav_manage bed call out';
-    s.linkTrackVars='eVar22'+','+scLinkCustVars;
-    s.tl(this,'o', s.eVar22);
-})
-
-//13-1 and 14-8
-$('a.download').on('click',function(){
-    var scTextVal=$(this).text();
-    if(scTextVal.indexOf('Discussion Guide')>-1){
-        s.linkTrackVars='eVar20,events'+','+scLinkCustVars;
-        s.events=s.linkTrackEvents="event4";
-        s.eVar20='download_doctor discussion guide';
-        console.log(s.linkTrackVars);
-        s.tl(this,'d', s.eVar20);
-    }
-    if(scTextVal.indexOf('your answers')>-1){
-        s.eVar30="bed form screener";
-        s.linkTrackVars='eVar30,events'+','+scLinkCustVars;
-        s.events=s.linkTrackEvents="event2";
-        s.tl(this,'d', s.eVar30+'_form complete');
-    }
-})
-
-//13-2 and 16-7
-$('a#find-specialist').on('click',function(){
-    s.eVar22='nav_find a specialist call out';
-    s.linkTrackVars='eVar22'+','+scLinkCustVars;
-    s.tl(this,'o', s.eVar22);
-})
-
-//bed symptom screener 14-1
-//form start and yes no
-$('div#yesNoQuestion').on('click',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.events=s.linkTrackEvents="event3";
-    if(!localStorage['scEvent']){
-          s.events=s.linkTrackEvents=s.apl(s.events,'event39',',',1);
-          localStorage['scEvent']='eventset';
-    }
-    var scAns=$(this).find('input').attr('value');
-    var scQue=$(this).find('input').attr('name');
-    s.eVar34=scQue+'_'+scAns;
-    if(s.eVar34)s.eVar34=s.eVar34.toLowerCase();
-    s.eVar30='bed symptom screener';
-    s.tl(this,'o','bed symptom screener'+'_field clicked');
-})
-
-//frequencyQuestions
-$('div#frequencyQuestion').on('click',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='bed symptom screener';
-    var scAns=$(this).find('input').attr('value');
-    var scQue=$(this).find('input').attr('name');
-    s.eVar34=scQue+'_'+scAns;
-    localStorage[scQue]=scAns;
-    if(s.eVar34)s.eVar34=s.eVar34.toLowerCase();
-    s.tl(this,'o','bed symptom screener'+'_field clicked');
-})
-
-//15-1 form start/interacted
-$('div#form.send-doctor').one('click',function(){
-    s.linkTrackVars='eVar30,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.events=s.linkTrackEvents="event39,event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
-
-//15-1 first name
-$('input#hcp-firstName').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp first name';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
-
-//15-2 last name
-$('input#hcp-lastName').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp last name';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
-
-//15-3 address1
-$('input#address1').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp address 1';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
-
-//15-4 address2
-$('input#address2').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp address 2';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
-
-//15-5 city
-$('input#city').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp city';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
-
-//15-6 state
-$('select#state').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp state';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
-
-//15-7 zip
-$('input#zip').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp zip';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
-
-//15-8 form complete
-$('a#submit-button').one('click',function(){
-    s.linkTrackVars='eVar30,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.events=s.linkTrackEvents="event2";
-    s.tl(this,'o','send info kit to doctor'+'_complete');
-})
-
-//Video Handler Functions 16
-function mediaPlayHandler(val1){
-    s.linkTrackVars='eVar23,prop23'+','+scLinkCustVars;
-    s.linkTrackEvents=s.events='event5';
-    var val2='_start';
-    var val3=val1.replace(' > ','_').toLowerCase();
-    if(val3=='video_monicaseles story')val3='video_monica seles story';
-    s.eVar23=val3+val2;
-    s.prop23="D=v23";
-    s.tl(this,'o','video'+val2)
-}
-
-function mediaMilestoneHandler(val1,val4){
-    var vidEvent=""
-    console.log(val1);
-    if(val4==25)vidEvent='event34';
-    else if(val4==50)vidEvent='event35';
-    else if(val4==75)vidEvent='event36';
-    s.linkTrackVars='eVar23,prop23'+','+scLinkCustVars;
-    s.linkTrackEvents=s.events=vidEvent;
-    var val3=val1.replace(' > ','_').toLowerCase();
-    if(val3=='video_monicaseles story')val3='video_monica seles story';
-    s.eVar23=val3+'_'+val4+'% milestone reached';
-    s.prop23='D=v23';
-    s.tl(this,'o','video_'+val4+'% milestone reached')
-}
-
-function mediaCompleteHandler(val1){
-    console.log(val1);
-    s.linkTrackVars='eVar23,prop23'+','+scLinkCustVars;
-    s.linkTrackEvents=s.events='event37';
-    var val3=val1.replace(' > ','_').toLowerCase();
-    if(val3=='video_monicaseles story')val3='video_monica seles story';
-    var val2='_complete';
-    s.eVar23=val3+val2;
-    s.prop23="D=v23";
-    s.tl(this,'o','video'+val2)
-}
-//16-2
-$('a.arrow.view-transcript.down').on('click',function(){
-    var scTran=$('div#transcriptContainer div.show').attr('class');
-    var parts = scTran.split('-', 2);
-    var scTranName=parts[0];
-    if(scTranName=='sunny'){scTranNameF='sunny sea gold vid';}
-    else if(scTranName=='monica'){scTranNameF='monica seles vid';}
-    if(localStorage['vidTrNa']!=scTranName){
-        localStorage['vidTrNa']=scTranName;
-        s.events='';
-        s.linkTrackVars='eVar22,prop22'+','+scLinkCustVars;
-        s.eVar22='transcript expand_'+scTranNameF+'_patient experiences';
-        s.tl(this,'o','transcript_'+scTranNameF);
-    }
-    else{
-        localStorage['vidTrNa']="";
-    }
-})
-//17-1 through 17-9
-$('div.buttons a.continue').on('click',function(){
-    var scLinkUrl=$(this).attr('href');
-    scLinkUrl=scLinkUrl.replace('https://','').replace('.aspx','').replace('http://','').replace('www.','');
-    s.eVar21='external exit_'+scLinkUrl;
-    s.linkTrackVars='eVar21'+','+scLinkCustVars;
-    s.tl(this,'e','external exit_'+scLinkUrl);
-})
-//17-11
-$('a#share-their-experiences').on('click',function(){
-    s.eVar22='nav_bed patients experiences call out';
-    s.linkTrackVars='eVar22'+','+scLinkCustVars;
-    s.tl(this,'o', s.eVar22);
-})
-//Onclick code for custom click and other events - end
     /** Visit behavior variables begin **/
     s.visitPageNum=getVisitPageViews();
     // On the first page of the visit...
@@ -591,6 +312,7 @@ $('a#share-their-experiences').on('click',function(){
     s.prop14=s.eVar46="D=pageName";
     s.prop41=s.eVar47="D=g";
 
+
 function shareSendSave() { 
         //s.eVar5=eventObj.provider; 
         //s.linkTrackVars="eVar5,events"; 
@@ -598,6 +320,221 @@ function shareSendSave() {
         //s.tl(this,'o', s.eVar5 + " login"); 
 } 
 
+//Onclick code for custom click and other events - begin
+scLinkCustVars="prop1,prop2,prop4,prop5,prop6,prop7,prop8,prop9,prop10,prop11,prop12,prop24,prop41,eVar45,eVar46,eVar47";
+//7-1
+$('li.first').on('click',function(){
+    s.linkTrackVars='eVar20,events'+','+scLinkCustVars;
+    s.eVar20='download_prescribing info';
+    s.events=s.linkTrackEvents='event4';
+	s.tl(this,'d', s.eVar20);
+})
+
+//7-2
+$('li.medguide').on('click','a',function(){
+	s.linkTrackVars="eVar20,events"+','+scLinkCustVars;
+	s.eVar20="download_medication guide";
+	s.events=s.linkTrackEvents="event4";
+	s.tl(this,'d', s.eVar20);
+})
+
+//7-3
+$('li.care').on('click','a',function(){
+	s.linkTrackVars="eVar21"+','+scLinkCustVars;
+	s.eVar21="internal site exit_vyvanse pro";
+    s.events=s.linkTrackEvents="";
+	s.tl(this,'e', s.eVar21); 
+})
+
+//7-4
+$('li#vyvanse-fda-approved').on('click',function(){
+	s.eVar20='download_bed press release';
+	s.linkTrackVars='eVar20,events'+','+scLinkCustVars;
+	s.events=s.linkTrackEvents='event4';
+	s.tl(this,'d', s.eVar20); 
+})
+
+
+//7-5 and 8-11
+$('a.continue').on('click',function(){
+	console.log('continue click');
+	var scLinkUrl=$(this).attr('href');
+
+		if(scLinkUrl.indexOf('www.vitals.com')>-1){
+		s.eVar21='external site exit_vitals.com';
+		s.linkTrackVars='eVar21'+','+scLinkCustVars;
+        console.log(s.linkTrackVars);
+        s.events=s.linkTrackEvents="";
+		s.tl(this,'e', s.eVar21); 
+	}
+	else if(scLinkUrl.indexOf('fda.gov')>-1){
+		s.eVar21='external site exit_fda.gov';
+		s.linkTrackVars='eVar21'+','+scLinkCustVars;
+        s.events=s.linkTrackEvents="";
+		s.tl(this,'e', s.eVar21); 
+	}
+})
+
+//7-6
+$('a.copay').on('click',function(){
+	s.eVar21='internal site exit_vyvansecopay.com';
+	s.linkTrackVars="eVar21"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents="";
+	s.tl(this,'e', s.eVar21);
+})
+
+//7-7
+$('li.should-stay a.compass').on('click',function(){
+    s.eVar21='internal site exit_thecompassproject';
+	s.linkTrackVars="eVar21"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents="";
+	s.tl(this,'e', s.eVar21);
+})
+
+//7-8
+$('a.talk-doctor').on('click',function(){
+	var scLinkLoc='';
+	if(s.pageName.indexOf('home')>-1){
+		scLinkLoc='homepage';
+	}
+	else if(s.pageName.indexOf('disorder')>-1){
+		scLinkLoc='what is bed';
+	}
+	s.linkTrackVars="eVar22"+','+scLinkCustVars;
+	s.eVar22="nav_talking with your doctor call out_"+scLinkLoc;
+    s.events=s.linkTrackEvents="";
+	s.tl(this,'e', s.eVar22);
+})
+
+//8-1
+$('ul.desktop li').on('click','img.shireCares',function(){
+	s.linkTrackVars="eVar21"+','+scLinkCustVars;
+	s.eVar21='internal site exit_shire cares';
+    s.events=s.linkTrackEvents="";
+	s.tl(this,'e', s.eVar21);
+})
+
+//8-2
+$('ul.desktop li').on('click','a.compass',function(){
+	s.linkTrackVars="eVar21"+','+scLinkCustVars;
+	s.eVar21='internal site exit_thecompassproject.net';
+    s.events=s.linkTrackEvents="";
+	s.tl(this,'e', s.eVar21);
+})
+
+//8-3 Tracked using code for 7-5
+
+//8-4
+$('li.copay').on('click',function(){
+	s.linkTrackVars="eVar21"+','+scLinkCustVars;
+	s.eVar21='internal site exit_vyvansecopay.com';
+    s.events=s.linkTrackEvents="";
+	s.tl(this,'e', s.eVar21);
+})
+
+//8-5
+$('a[href="http://www.shire.com"]').on('click',function(){
+	s.linkTrackVars="eVar21"+','+scLinkCustVars;
+	s.eVar21='internal site exit_shire.com';
+    s.events=s.linkTrackEvents="";
+	s.tl(this,'e', s.eVar21);
+})
+
+//8-6
+$('ul.wide li a').on('click',function(){
+	var scLinkUrl=$(this).attr('href');
+	if(scLinkUrl.indexOf('PDFs/Vyvanse_USA_ENG.pdf')>-1){
+		s.eVar20='download_prescribing info';
+		s.linkTrackVars='eVar20'+','+scLinkCustVars;
+        s.events=s.linkTrackEvents="event4";
+		s.tl(this,'d', s.eVar20);
+	}
+	else if(scLinkUrl.indexOf('MG_Vyvanse_USA_ENG.pdf')>-1){
+		s.eVar20='download_medication guide';
+		s.linkTrackVars='eVar20'+','+scLinkCustVars;
+        s.events=s.linkTrackEvents="event4";
+		s.tl(this,'d', s.eVar20);
+	}
+})
+
+//8-7
+$('ul.narrow li a[href*="shireregistration.com/unsubscribe"]').on('click',function(){
+	s.linkTrackVars="eVar21"+','+scLinkCustVars;
+	s.eVar21='internal site exit_shire unsubscribe';
+    s.events=s.linkTrackEvents="";
+	s.tl(this,'e', s.eVar21);
+})
+
+//8-8
+// Shire Logo Click
+    $('a.desktop.shire-logo').on('click',function(){
+        s.eVar21="internal site exit_shire.com";
+        s.linkTrackVars='eVar21'+','+scLinkCustVars;
+        s.events=s.linkTrackEvents='';
+        s.tl(this,'e', s.eVar21);
+    })
+//8-9 and 8-10
+$('p.pi.wideisi a').on('click',function(){
+	var scLinkUrl=$(this).attr('href');
+	if(scLinkUrl.indexOf('pi.shire')>-1){
+		s.eVar20='download_prescribing info';
+		s.linkTrackVars='eVar20,events'+','+scLinkCustVars;
+		s.events=s.linkTrackEvents='event4';
+		s.tl(this,'d', s.eVar20);
+	}
+	else if(scLinkUrl.indexOf('medguide.shire')>-1){
+		s.eVar20='download_medication guide';
+		s.linkTrackVars='eVar20,events'+','+scLinkCustVars;
+		s.events=s.linkTrackEvents='event4';
+		s.tl(this,'d', s.eVar20);
+	}
+})
+
+//8-11 included in code for 7-5
+//9-1 included in code for 7-8
+//9-2, 10-2, 11-3  included in code for 7-4
+
+
+//10-1 and 11-2
+$('a.vyvanse-savings-card').on('click',function(){
+	s.eVar22="nav_register for a savings card call out";
+	s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents="";
+	s.tl(this,'e', s.eVar22);
+})
+
+//11-1
+$('img.download.printDDGuide').on('click',function(){
+	s.eVar20='download_questions for your doctor pdf';
+	s.linkTrackVars='eVar20,events'+','+scLinkCustVars;
+	s.events=s.linkTrackEvents='event4';
+	s.tl(this,'d', s.eVar20); 
+})
+
+
+//11-4 and 11-5
+$('div#include-prescribing a').on('click',function(){
+	var scLinkUrl=$(this).attr('href');
+	if(scLinkUrl.indexOf('pi.shire')>-1){
+		s.eVar20='download_prescribing info';
+		s.linkTrackVars='eVar20,events'+','+scLinkCustVars;
+		s.events=s.linkTrackEvents='event4';
+		s.tl(this,'d', s.eVar20);
+	}
+	else if(scLinkUrl.indexOf('medguide.shire')>-1){
+		s.eVar20='download_medication guide';
+		s.linkTrackVars='eVar20,events'+','+scLinkCustVars;
+		s.events=s.linkTrackEvents='event4';
+		s.tl(this,'d', s.eVar20); 
+	}
+})
+
+
+
+//12-1 code in the rule 7-4
+//12-2 in previous rule
+
+//Onclick code for custom click and other events - end
 /**********SiteCatalyst Utility Plugins Compatible with both H27.4 and App Measurement 1.4  -begin *****/
 
 /* p_gh Utility Function required in all implementations */
@@ -768,27 +705,6 @@ s.getPercentPageViewed=new Function("n",""
 +"length;i++)if(EL)EL(E[i],f,false);else if(AE)AE('on'+E[i],f);f()};v"
 +"ar a=s.s_PPVg();return!n||n=='-'?a[1]:a");
 
-/********** SiteCat Plugins for specific sites -begin ***********/
-
-/*
- * Plugin: downloadLinkHandler 0.8 - identify and report download links
- */
-// s.downloadLinkHandler=new Function("p","e",""
-// +"var s=this,o=s.p_gh(),h=o.href,n='linkDownloadFileTypes',i,t;if(!h|"
-// +"|(s.linkType&&(h||s.linkName)))return'';i=h.indexOf('?');t=s[n];s[n"
-// +"]=p?p:t;if(s.lt(h)=='d')s.linkType='d';else h='';s[n]=t;return e?o:"
-// +"h;");
-
-/*
- * Plugin: exitLinkHandler 0.8 - identify and report exit links
- */
-// s.exitLinkHandler=new Function("p","e",""
-// +"var s=this,o=s.p_gh(),h=o.href,n='linkInternalFilters',i,t;if(!h||("
-// +"s.linkType&&(h||s.linkName)))return'';i=h.indexOf('?');t=s[n];s[n]="
-// +"p?p:t;h=s.linkLeaveQueryString||i<0?h:h.substring(0,i);if(s.lt(h)=="
-// +"'e')s.linkType='e';else h='';s[n]=t;return e?o:h;");
-
-
 /* channelManager v2.85AM - Tracking External Traffic */
 s.channelManager=new Function("a","b","c","d","e","f","g",""
 +"var s=this,h=new Date,i=0,j,k,l,m,n,o,p,q,r,t,u,v,w,x,y,z,A,B,C,D,E"
@@ -845,12 +761,14 @@ s.seList="google.,googlesyndication.com,.googleadservices.com|q,as_q|"
 +"o.uk|key,query|Tiscali>virgilio.it|qs|Virgilio>yandex|text|Yandex.r"
 +"u>optimum.net|q|Optimum Search";
 
+ 
+
 /********** Siteat Plugins for specific sites -end ***********/
 
 
 //Set Tracking Server
-s.trackingServer="metrics.vyvanse.com";
-s.trackingServerSecure="smetrics.vyvanse.com";
+s.trackingServer="metrics.abilifymaintena.com";
+s.trackingServerSecure="smetrics.abilifymaintena.com";
 
 /*
  ============== DO NOT ALTER ANYTHING BELOW THIS LINE ! ===============

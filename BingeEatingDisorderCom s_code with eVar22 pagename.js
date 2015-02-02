@@ -39,12 +39,12 @@ function s_doPlugins(s) {
         count = 0,
         s_pageName = "",
         urlPath = document.URL.toLowerCase();
-    //HomePage
+    //Assure HomePage
     if(document.location.pathname == "/" || document.location.pathname == "/index.html"){
       s.pageName =  s.prop1 + ' > ' + ' > ' + "global" + ' > ' + "home".toLowerCase();
       s.channel =  s.prop1 + ' > ' + "adhd".toLowerCase();
     }
-    //SubPage
+    //Assure SubPage
     //else if(parts[3] == "ourCommitment" || parts[3] == "supportOfferings" ){
      //s.pageName =  s.prop1 + ' > ' + "assure" + ' > ' + "global" + ' > ' + parts[3].toLowerCase();
      //s.channel =  s.prop1 + ' > ' + "assure".toLowerCase();
@@ -93,7 +93,7 @@ function s_doPlugins(s) {
 
     //Traffic Source Entry Page
     if (!!s.eVar4)
-        s.prop5 = s.eVar4 + "_" + s.pageName; // Traffic Source Entry Page
+        s.prop5 = s.eVar4 + "|" + s.pageName; // Traffic Source Entry Page
     else
         s.prop5    = s.pageName; // Traffic Source Entry Page gets all page names for pathing purposes
     //Get Visit Number
@@ -256,10 +256,10 @@ function s_doPlugins(s) {
     /* end - channel manager */
         if(s.prop1){
         s.eVar45="dtc_"+s.prop1;
-        s.prop2=s.prop1+"_dtc";
-        s.prop3=s.prop2+"_"+s.pageName;
+        s.prop2=s.prop1+"|dtc";
+        s.prop3=s.prop2+"|"+s.pageName;
         //Get Previous Page Name
-        s.prop4=s.prop2+'_'+s.getPreviousValue(!!s.pageName ? s.pageName : !!s.pageType ? s.channel+" > Error Page" : '', 's_gpv_pn', '');
+        s.prop4=s.prop2+'|'+s.getPreviousValue(!!s.pageName ? s.pageName : !!s.pageType ? s.channel+" > Error Page" : '', 's_gpv_pn', '');
         /*Percent Page Viewed*/
         if(s.prop4){s.prop44=s.getPercentPageViewed();}
         if(s.pageName=="default"){s.pageName="home page";}
@@ -272,19 +272,19 @@ scLinkCustVars="prop1,prop2,prop4,prop5,prop6,prop7,prop8,prop9,prop10,prop11,pr
 
 $('#s3-widget-share-tab').on('click',function(){
     console.log(s.page)
-    s.eVar22='ssstabinteract_share';
+    s.eVar22='ssstabinteract|share|'+s.pageName;
     s.linkTrackVars="eVar30,eVar22"+','+scLinkCustVars;
     s.events=s.linkTrackEvents='';
     s.tl(this,'o',s.eVar22);
 })
 $('#s3-widget-send-tab').on('click',function(){
-    s.eVar22='ssstabinteract_send';
+    s.eVar22='ssstabinteract|send|'+s.pageName;
     s.linkTrackVars="eVar30,eVar22"+','+scLinkCustVars;
     s.events=s.linkTrackEvents='';
     s.tl(this,'o',s.eVar22);
 })
 $('#s3-widget-save-tab').on('click',function(){
-    s.eVar22='ssstabinteract_save';
+    s.eVar22='ssstabinteract|save|'+s.pageName;
     s.linkTrackVars="eVar30,eVar22"+','+scLinkCustVars;
     s.events=s.linkTrackEvents='';
     s.tl(this,'o',s.eVar22);
@@ -297,25 +297,25 @@ $('input.s3-form-text').on('blur',function(){
     s.linkTrackVars='events,prop30,eVar30,prop34,eVar34,prop39,eVar39'+','+scLinkCustVars;
     s.prop30=scFormName;
     s.eVar30="D=c30";
-    s.prop34=s.prop30+'_'+scFormField;
+    s.prop34=s.prop30+'|'+scFormField;
     s.eVar34="D=c34";
-    s.prop39=s.prop34+'_(pii)';
+    s.prop39=s.prop34+'|(pii)';
     s.eVar39="D=c39";
     s.events=s.linkTrackEvents='event3';
-    s.tl(this,'o',scFormName+'_field name click');
+    s.tl(this,'o',scFormName+'|field name click');
 })
 
 
 $('a#s3-inter-actions-continue').on('click',function(){
     var scLinkUrl=$(this).attr('href');
     if(scLinkUrl.indexOf('facebook')>-1){
-    s.eVar52='social share_facebook';
+    s.eVar52='social share|facebook';
     }
     if(scLinkUrl.indexOf('twitter')>-1){
-    s.eVar52='social share_twitter';
+    s.eVar52='social share|twitter';
     }
     if(scLinkUrl.indexOf('pinterest')>-1){
-    s.eVar52='social share_pinterest';
+    s.eVar52='social share|pinterest';
     }
     s.linkTrackVars='eVar52,eVar53,events'+','+scLinkCustVars;
     s.events=s.linkTrackEvents="event30";
@@ -327,14 +327,14 @@ $('a#s3-inter-actions-continue').on('click',function(){
 $('input[type="button"]#s3-btn-send-submit').on('click',function(){
     s.linkTrackVars='eVar53,eVar52,events'+','+scLinkCustVars;
     s.linkTrackEvents=s.events='event30';
-    s.eVar52='social share_email sent';
-    s.eVar53='social item shared';
+    s.eVar52='social share|email sent';
+    s.eVar53='social item shared|'+s.pageName;
     s.tl(this,'o','social item shared');
 })
 
 //6-1
 $('a.for-hcp').on('click',function(){
-    s.eVar21='internal site exit_bed ub hcp site';
+    s.eVar21='internal site exit|bed ub hcp site';
     s.linkTrackVars='eVar21'+','+scLinkCustVars;
     s.events='';
     s.tl(this,'e', s.eVar21);
@@ -342,21 +342,21 @@ $('a.for-hcp').on('click',function(){
 
 //7-1
 $('a.shire-logo').on('click',function(){
-    s.eVar21='internal site exit_shire logo';
+    s.eVar21='internal site exit|shire logo';
     s.linkTrackVars='eVar21'+','+scLinkCustVars;
     s.tl(this,'e', s.eVar21);
 })
 
 //7-2
 $('li.last a[href="http://www.shire.com/"]').on('click',function(){
-    s.eVar21='internal site exit_shireus';
+    s.eVar21='internal site exit|shireus';
     s.linkTrackVars='eVar21'+','+scLinkCustVars;
     s.tl(this,'e', s.eVar21);
 })
 
 //10-2, 16-8 and 17-10
 $('a#start-conversation').on('click',function(){
-    s.eVar22='nav_doctor discussion guide call out';
+    s.eVar22='nav|doctor discussion guide call out|'+s.pageName;
     s.linkTrackVars='eVar22'+','+scLinkCustVars;
     s.tl(this,'o', s.eVar22);
 })
@@ -364,7 +364,7 @@ $('a#start-conversation').on('click',function(){
 //10-3
 $('a#manage-BED').on('click',function(){
     if(s.pageName)s.pageName=s.pageName.toLowerCase();
-    s.eVar22='nav_manage bed call out';
+    s.eVar22='nav|manage bed call out|'+s.pageName;
     s.linkTrackVars='eVar22'+','+scLinkCustVars;
     s.tl(this,'o', s.eVar22);
 })
@@ -375,7 +375,7 @@ $('a.download').on('click',function(){
     if(scTextVal.indexOf('Discussion Guide')>-1){
         s.linkTrackVars='eVar20,events'+','+scLinkCustVars;
         s.events=s.linkTrackEvents="event4";
-        s.eVar20='download_doctor discussion guide';
+        s.eVar20='download|doctor discussion guide';
         console.log(s.linkTrackVars);
         s.tl(this,'d', s.eVar20);
     }
@@ -383,13 +383,13 @@ $('a.download').on('click',function(){
         s.eVar30="bed form screener";
         s.linkTrackVars='eVar30,events'+','+scLinkCustVars;
         s.events=s.linkTrackEvents="event2";
-        s.tl(this,'d', s.eVar30+'_form complete');
+        s.tl(this,'d', s.eVar30+'|form complete');
     }
 })
 
 //13-2 and 16-7
 $('a#find-specialist').on('click',function(){
-    s.eVar22='nav_find a specialist call out';
+    s.eVar22='nav|find a specialist call out|'+s.pageName;
     s.linkTrackVars='eVar22'+','+scLinkCustVars;
     s.tl(this,'o', s.eVar22);
 })
@@ -405,10 +405,10 @@ $('div#yesNoQuestion').on('click',function(){
     }
     var scAns=$(this).find('input').attr('value');
     var scQue=$(this).find('input').attr('name');
-    s.eVar34=scQue+'_'+scAns;
+    s.eVar34=scQue+'|'+scAns;
     if(s.eVar34)s.eVar34=s.eVar34.toLowerCase();
     s.eVar30='bed symptom screener';
-    s.tl(this,'o','bed symptom screener'+'_field clicked');
+    s.tl(this,'o','bed symptom screener'+'|field clicked');
 })
 
 //frequencyQuestions
@@ -417,10 +417,10 @@ $('div#frequencyQuestion').on('click',function(){
     s.eVar30='bed symptom screener';
     var scAns=$(this).find('input').attr('value');
     var scQue=$(this).find('input').attr('name');
-    s.eVar34=scQue+'_'+scAns;
+    s.eVar34=scQue+'|'+scAns;
     localStorage[scQue]=scAns;
     if(s.eVar34)s.eVar34=s.eVar34.toLowerCase();
-    s.tl(this,'o','bed symptom screener'+'_field clicked');
+    s.tl(this,'o','bed symptom screener'+'|field clicked');
 })
 
 //15-1 form start/interacted
@@ -428,70 +428,70 @@ $('div#form.send-doctor').one('click',function(){
     s.linkTrackVars='eVar30,events'+','+scLinkCustVars;
     s.eVar30='send info kit to doctor';
     s.events=s.linkTrackEvents="event39,event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
+    s.tl(this,'o','send info kit to doctor'+'|field clicked');
 })
 
 //15-1 first name
 $('input#hcp-firstName').on('blur',function(){
     s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
     s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp first name';
+    s.eVar34='field name|hcp first name';
     s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
+    s.tl(this,'o','send info kit to doctor'+'|field clicked');
 })
 
 //15-2 last name
 $('input#hcp-lastName').on('blur',function(){
     s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
     s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp last name';
+    s.eVar34='field name|hcp last name';
     s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
+    s.tl(this,'o','send info kit to doctor'+'|field clicked');
 })
 
 //15-3 address1
 $('input#address1').on('blur',function(){
     s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
     s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp address 1';
+    s.eVar34='field name|hcp address 1';
     s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
+    s.tl(this,'o','send info kit to doctor'+'|field clicked');
 })
 
 //15-4 address2
 $('input#address2').on('blur',function(){
     s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
     s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp address 2';
+    s.eVar34='field name|hcp address 2';
     s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
+    s.tl(this,'o','send info kit to doctor'+'|field clicked');
 })
 
 //15-5 city
 $('input#city').on('blur',function(){
     s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
     s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp city';
+    s.eVar34='field name|hcp city';
     s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
+    s.tl(this,'o','send info kit to doctor'+'|field clicked');
 })
 
 //15-6 state
 $('select#state').on('blur',function(){
     s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
     s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp state';
+    s.eVar34='field name|hcp state';
     s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
+    s.tl(this,'o','send info kit to doctor'+'|field clicked');
 })
 
 //15-7 zip
 $('input#zip').on('blur',function(){
     s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
     s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp zip';
+    s.eVar34='field name|hcp zip';
     s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
+    s.tl(this,'o','send info kit to doctor'+'|field clicked');
 })
 
 //15-8 form complete
@@ -499,16 +499,16 @@ $('a#submit-button').one('click',function(){
     s.linkTrackVars='eVar30,events'+','+scLinkCustVars;
     s.eVar30='send info kit to doctor';
     s.events=s.linkTrackEvents="event2";
-    s.tl(this,'o','send info kit to doctor'+'_complete');
+    s.tl(this,'o','send info kit to doctor'+'|complete');
 })
 
 //Video Handler Functions 16
 function mediaPlayHandler(val1){
     s.linkTrackVars='eVar23,prop23'+','+scLinkCustVars;
     s.linkTrackEvents=s.events='event5';
-    var val2='_start';
-    var val3=val1.replace(' > ','_').toLowerCase();
-    if(val3=='video_monicaseles story')val3='video_monica seles story';
+    var val2='|start';
+    var val3=val1.replace(' > ','|').toLowerCase();
+    if(val3=='video|monicaseles story')val3='video|monica seles story';
     s.eVar23=val3+val2;
     s.prop23="D=v23";
     s.tl(this,'o','video'+val2)
@@ -522,20 +522,20 @@ function mediaMilestoneHandler(val1,val4){
     else if(val4==75)vidEvent='event36';
     s.linkTrackVars='eVar23,prop23'+','+scLinkCustVars;
     s.linkTrackEvents=s.events=vidEvent;
-    var val3=val1.replace(' > ','_').toLowerCase();
-    if(val3=='video_monicaseles story')val3='video_monica seles story';
-    s.eVar23=val3+'_'+val4+'% milestone reached';
+    var val3=val1.replace(' > ','|').toLowerCase();
+    if(val3=='video|monicaseles story')val3='video|monica seles story';
+    s.eVar23=val3+'|'+val4+'% milestone reached';
     s.prop23='D=v23';
-    s.tl(this,'o','video_'+val4+'% milestone reached')
+    s.tl(this,'o','video|'+val4+'% milestone reached')
 }
 
 function mediaCompleteHandler(val1){
     console.log(val1);
     s.linkTrackVars='eVar23,prop23'+','+scLinkCustVars;
     s.linkTrackEvents=s.events='event37';
-    var val3=val1.replace(' > ','_').toLowerCase();
-    if(val3=='video_monicaseles story')val3='video_monica seles story';
-    var val2='_complete';
+    var val3=val1.replace(' > ','|').toLowerCase();
+    if(val3=='video|monicaseles story')val3='video|monica seles story';
+    var val2='|complete';
     s.eVar23=val3+val2;
     s.prop23="D=v23";
     s.tl(this,'o','video'+val2)
@@ -551,8 +551,8 @@ $('a.arrow.view-transcript.down').on('click',function(){
         localStorage['vidTrNa']=scTranName;
         s.events='';
         s.linkTrackVars='eVar22,prop22'+','+scLinkCustVars;
-        s.eVar22='transcript expand_'+scTranNameF+'_patient experiences';
-        s.tl(this,'o','transcript_'+scTranNameF);
+        s.eVar22='transcript expand|'+scTranNameF+'|patient experiences';
+        s.tl(this,'o','transcript|'+scTranNameF);
     }
     else{
         localStorage['vidTrNa']="";
@@ -562,13 +562,13 @@ $('a.arrow.view-transcript.down').on('click',function(){
 $('div.buttons a.continue').on('click',function(){
     var scLinkUrl=$(this).attr('href');
     scLinkUrl=scLinkUrl.replace('https://','').replace('.aspx','').replace('http://','').replace('www.','');
-    s.eVar21='external exit_'+scLinkUrl;
+    s.eVar21='external exit|'+scLinkUrl;
     s.linkTrackVars='eVar21'+','+scLinkCustVars;
-    s.tl(this,'e','external exit_'+scLinkUrl);
+    s.tl(this,'e','external exit|'+scLinkUrl);
 })
 //17-11
 $('a#share-their-experiences').on('click',function(){
-    s.eVar22='nav_bed patients experiences call out';
+    s.eVar22='nav|bed patients experiences call out|'+s.pageName;
     s.linkTrackVars='eVar22'+','+scLinkCustVars;
     s.tl(this,'o', s.eVar22);
 })

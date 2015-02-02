@@ -2,7 +2,6 @@
 // this file must contain a defined s_account for app meas code to run as well.
 // Must contain s = new AppMeasurement();
 // Include s.account=s_account in the Additional Configuration box within the SiteCatalyst Pageload Tag Attributes
-// library|bingeeatingdisorders|shir-593
 s = new AppMeasurement();
 
 /************************** CONFIG SECTION **************************/
@@ -24,555 +23,221 @@ s.linkTrackEvents="None"
 s.cookieDomain=document.location.hostname;
 s.cookiePath="/";
 
+
+
 s.usePlugins=true
 function s_doPlugins(s) {
-    //Set Indication into eVar55
-        s.eVar56="bed";
-    /* Add calls to plugins here */
-    var scURL=document.location.pathname;
-    //Set Site Vertical-Name
-        s.prop1="binge eating disorder";
+//test cut start
+/* Add calls to plugins here */
+var scURL=document.location.pathname;
+var sc_URL=document.location.pathname.toLowerCase();
+//Set Site Vertical-Name
+    if(scURL.indexOf('/adhd/') >-1){
+        s.prop1='adhd';
+        s.eVar55=s.prop1;
+        }
+    else if(scURL.indexOf('/binge-eating-disorder/') >-1){
+        s.prop1='bed';
+        s.eVar55=s.prop1;
+        }
+    else{
+        s.prop1="franchise";
+        s.eVar55=s.prop1;
+    }
+    s.eVar45='vyvansepro';
+    s.eVar50='hcp';
+//Configure Page Names
+var parts = window.location.href.replace(".html","").replace("index","").replace("default.aspx","").replace("Default.aspx","").replace('#','').split("/"),
+    total = parts.length,
+    count = 0,
+    s_pageName = "",
+    urlPath = document.URL.toLowerCase();
 
-    //Configure Page Names
-    var parts = window.location.href.replace(".html","").replace("index","").replace(".aspx","").split("/"),
-        total = parts.length,
-        count = 0,
-        s_pageName = "",
-        urlPath = document.URL.toLowerCase();
-    //HomePage
-    if(document.location.pathname == "/" || document.location.pathname == "/index.html"){
-      s.pageName =  s.prop1 + ' > ' + ' > ' + "global" + ' > ' + "home".toLowerCase();
-      s.channel =  s.prop1 + ' > ' + "adhd".toLowerCase();
-    }
-    //SubPage
-    //else if(parts[3] == "ourCommitment" || parts[3] == "supportOfferings" ){
-     //s.pageName =  s.prop1 + ' > ' + "assure" + ' > ' + "global" + ' > ' + parts[3].toLowerCase();
-     //s.channel =  s.prop1 + ' > ' + "assure".toLowerCase();
-    //}
-    //Hcc&Hcp Home
-    else if(parts[5] == "" ){
-        s.pageName =  "home" + s.prop1 + ' > ' + parts[3] + ' > ';
-        s.channel =  s.prop1 + ' > ' + parts[3]  + ' > ';
-    }
-    //Search
-    if(document.location.pathname.indexOf('/searchResults.htm') > -1){
-         s.pageName =  s.prop1 + ' > ' + parts[4] + ' > ' + parts[3] + ' > ' + "search" .toLowerCase();
-     s.channel =  s.prop1 + ' > ' + parts[4]  + ' > ' + parts[3].toLowerCase();
-    }
-    //Hcc&Hcp  Sub
-    else if(parts[5] != "" || parts[5] !="undefined" ){
-     s.pageName = parts[3];
-    }
+if(document.location.pathname == "/" || document.location.pathname == "/index.html"){
+  s.pageName =  s.prop1 + ' > ' + ' > ' + "global" + ' > ' + "home".toLowerCase();
+}
+else if(parts[3] != "" && parts[4] !="" && parts[5] !="" && parts[3] != "undefined" && parts[4] !="undefined" && parts[5] !="undefined"){
+    s.pageName =  parts[3] +'|'+ parts[4] +"|"+ parts[5];
+    s.channel =  s.prop1 +'|'+ parts[3];
+}
+//parts
+else if(parts[3] != "" && parts[4] !="" && parts[3] != "undefined" && parts[4] !="undefined"){
+    s.pageName = parts[3] + '|' + parts[4];
+    s.channel =  s.prop1 + '|' + parts[3];
+}
+//Hcc&Hcp  Sub
+else if(parts[3] != "" && parts[3] !="undefined" ){
+ s.pageName = parts[3];
+ s.channel = s.prop1;
+}
+if(parts[3]=='binge-eating-disorder' && parts[4]!="" && parts[4]!="undefined" && parts[5]!="" && parts[5]!="undefined"){
+    s.pageName='bed|'+parts[4]+"|"+parts[5];
+    s.channel=parts[3];
+}
+if(parts[3]!='binge-eating-disorder' && parts[3]!='adhd'){
+    s.pageName="franchise|"+s.pageName;
+}
+//console.log("part 1 "+parts[1]);
+//console.log("part 2 "+parts[2]);
+//console.log("part 3 "+parts[3]);
+//console.log("part 4 "+parts[4]);
+//console.log("part 5 "+parts[5]);
 
-    if(typeof(s.prop1)!="undefined" && typeof(scCat)!="undefined"){
-        s.prop2=s.prop1 + scCat;
+if(typeof(s.prop1)!="undefined" && typeof(scCat)!="undefined"){
+s.prop2=s.prop1 + scCat;
+}
+if(sc_URL=='/'||sc_URL == "/default.aspx"){
+    s.pageName=s.prop1+"|"+"home page";
+    s.channel =  s.prop1;
     }
-    if(scURL.indexOf('/about.aspx')>-1){
-        s.pageName="understanding bed";
-    }
-    if(scURL=='/'){
-        s.pageName="home page";
-    }
-    if(s.pageName=='what-is-BED'){
-        s.pageName='what is bed';
-    }
-    if(s.pageName=='questions-to-ask'){
-        s.pageName='talking with your doctor';
-    }
-    if(s.pageName=='management'){
-        s.pageName='managing bed';
-    }
-    if(s.pageName){
-        s.pageName=s.pageName.replace(/-/g, ' ')
-        s.channel=s.pageName;
-    }
+if(s.pageName){s.pageName=s.pageName.replace(/-/g,' ').toLowerCase();}
+if(s.channel){s.channel=s.channel.replace(/-/g,' ').toLowerCase();}
+if(scURL=="/binge-eating-disorder/"){s.pageName="bed|home page";}
+if(scURL=="/adhd/"){s.pageName="adhd|home page";}
+if(s.pageName=='savings'){s.pageName='savings offer';}
+if(s.pageName.indexOf('binge eating disorder|')>-1){s.pageName=s.pageName.replace('binge eating disorder','bed');}
 
     /** Visitor identification variables begin **/
     s.eVar1= s.c_r('s_vi') ? s.c_r('s_vi').match(/\|([^[]+)/) ? s.c_r('s_vi').match(/\|([^[]+)/)[1] : "Unexpected Format" : "D=vidn";
     /** Visitor identification variables end **/
-
+    //Get Previous Page Name
+    s.prop4=s.getPreviousValue(!!s.pageName ? s.pageName : !!s.pageType ? s.channel+" > Error Page" : '', 's_gpv_pn', '');
+    
     //Traffic Source Entry Page
     if (!!s.eVar4)
-        s.prop5 = s.eVar4 + "_" + s.pageName; // Traffic Source Entry Page
+        s.prop5 = s.eVar4 + " : " + s.pageName; // Traffic Source Entry Page
     else
         s.prop5    = s.pageName; // Traffic Source Entry Page gets all page names for pathing purposes
     //Get Visit Number
     s.prop6=s.getVisitNum();
-
+    
     //Get Days Since Last Visit
-    s.prop7=s.getDaysSinceLastVisit('sc_hcp_daysLastTouch');    s.eVar55=bt_data('content hierarchy level 1');
+    s.prop7=s.getDaysSinceLastVisit('sc_hcp_daysLastTouch');
     //Get Time Parting
     s.prop8=s.getTimeParting('h','-5');
     s.prop9=s.getTimeParting('d','-5');
     //s.prop4=s.getTimeParting('w','-5');
-
+    
     //Get New vs Repeat Visitor
     s.prop12=s.eVar35=s.getNewRepeat(30,'s_gnr');
-    //Set value of data object in signal to a variable
-    s.prop71=bt_data('data \> report suite');
-    s.prop72=bt_data('scottdeletesample');
-
+    
+    /*Percent Page Viewed*/
+    if(s.prop4){s.prop44=s.getPercentPageViewed();}
+    
     //Set Query Parameters into correct variable
-    //s.getQueryParam('utm_medium');
     if(!s.eVar25)s.eVar25=s.Util.getQueryParam('utm_source');
     if(!s.eVar26)s.eVar26=s.Util.getQueryParam('utm_campaign');
     if(!s.eVar27)s.eVar27=s.Util.getQueryParam('utm_content');
     if(!s.eVar28)s.eVar28=s.Util.getQueryParam('utm_term');
     if(!s.eVar29)s.eVar29=s.Util.getQueryParam('utm_creative');
+    
+    //Setup Link Track Plugin
+    s.hbx_lt = "auto"
+    s.setupLinkTrack(",,prop51,prop52", "SC_LINKS");
+
+   //Internal Search
+    if(scURL.indexOf("/searchResults.html")>-1){
+        if (!s.prop16) {s.prop16=s.Util.getQueryParam("q");}
+        if(s.prop16){s.eVar16="D=c16";
+            if(document.getElementById('tipue_search_results_count')){
+            var sc_success = document.getElementById('tipue_search_results_count')
+            textContent = sc_success.textContent;
+            s.prop19 = sc_success.textContent;
+            s.eVar19="D=c19"
+            if(s.prop19){s.events="event27";}
+            }
+            if(document.getElementById('tipue_search_warning_head')){
+                var sc_success = document.getElementById('tipue_search_warning_head')
+                textContent = sc_success.textContent;
+                s.prop19 = sc_success.textContent;
+                s.eVar19="D=c19"
+                if(s.prop19){s.events="event28";}
+            }
+        }
+    }
+
+
+
 
     //TODO: Cristi, this is your note --> change cookie name for multiple
     s.prop7         = s.getDaysSinceLastVisit('sc_hcp_daysLastTouch');
 
-    /* start - channel manager */
 
-    //TODO: Build internal referrer logic
-
-    /*
-        s.channelManager(a,b,c,d,e,f,g)
-        a = Campaign/Channel Identifiers.
-        b = deprecated
-        c = (s_cm) The cookie name that is used to enable the getValOnce check
-        d = ('') Uncompress search engine list.
-        e = (s_cmtb) Typed/Bookmarked cookie name
-        f = (30) Typed/Bookmarked non-override duration (in days)
-        g = (optional) Exclude internal tracking codes. When set to '1', campaign tracking codes are ignored if the referrer is flagged as internal.
-
-        eVar4: Channel Manager Last Touch (CMLT) Channel, most recent (last) allocation, expires after 30 days (or the campaign variable equivalent)
-        eVar72: CMLT Details, most recent (last) allocation, expires after 30 days (or the campaign variable equivalent)
-        eVar73: Channel Manager First Touch Channel, original (first) allocation, expires after 30 days. Set in Adobe Analytics as first value.
-        eVar74: CMFT Details, original (first) allocation, expires after 30 days. Set in Adobe Analytics as first value.
-    */
-
-    s.channelManager('utm_medium,utm_source,utm_campaign,utm_content,utm_term,utm_creative','','s_cm','','s_cmtb','30');
-
-    if(s._channel){
-        //set to lowercase
-        s._campaignID = s._campaignID.toLowerCase(); //campaign code found in the URL parameter passed into channelManager
-        s._channel = s._channel.toLowerCase(); //name of the determined channel
-        s._keywords = s._keywords.toLowerCase(); //search engine keywords
-        s._partner = s._partner.toLowerCase(); //search engine title. Configured in s.seList and s._extraSearchEngines
-        s._referrer - s._referrer.toLowerCase(); //referring URL
-        s._referringDomain = s._referringDomain.toLowerCase(); //referring URL's domain
-        s.pageName = s.pageName.toLowerCase();
-        //trim down the email referring domains
-        s.mailRef=s._referringDomain.indexOf('.mail.')
-        if(s.mailRef>-1)
-            s._referringDomain=s._referringDomain.substring(s.mailRef+1);
-        //Array of marketing channel query string parameters. Array keys are eVar numbers.
-        var campaignParams = [];
-        campaignParams[4] = s.Util.getQueryParam('utm_medium').toLowerCase();
-        campaignParams[25] = s.Util.getQueryParam('utm_source').toLowerCase();
-        campaignParams[26] = s.Util.getQueryParam('utm_campaign').toLowerCase();
-        campaignParams[27] = s.Util.getQueryParam('utm_content').toLowerCase();
-        campaignParams[28] = s.Util.getQueryParam('utm_term').toLowerCase();
-        campaignParams[29] = s.Util.getQueryParam('utm_creative').toLowerCase();
-        //Populate marketing channel eVars and build campaign variable
-        s.campaign = "";
-        for (var key in campaignParams) {
-            if (campaignParams.hasOwnProperty(key)) {
-              if (!!campaignParams[key]) {
-                s['eVar'+key] = campaignParams[key];
-                s.campaign += campaignParams[key]+"|";
-              } else if (!!campaignParams[4] || !!campaignParams[25] || !!campaignParams[26] || !!campaignParams[27] || !!campaignParams[28] || !!campaignParams[29]) {
-                s['eVar'+key] = "undefined";
-                s.campaign += "undefined|";
-              } else {
-                s.campaign += "undefined|";
-              }
-            }
+    //29 Form Complete
+    if(s.pageName.indexOf('savings|thank you')>-1 || s.pageName.indexOf('vyvansepro resource|thank you')>-1 ){
+        if(localStorage['scFormStart']=='vyvpro resource registration'){
+            s.eVar30='vyvpro resource registration';
+            s.events='event2';
+            s.prop30="D=v30";
+            localStorage.removeItem('scFormStart');
         }
-        //Cut off trailing "|"
-        s.campaign = s.campaign.substring(0, s.campaign.length - 1);
-        // Default values for all channels
-        //********
-        //legacy code
-        s.eVar7 = s.eVar8 = s.eVar42 = s.eVar44 = "other channel";
-        //set CMFT Channel to eVar4. eVar73 is set in Adobe Analytics as first value.
-        s.eVar73 = s.eVar4;
-        //Set the channel detail variables
-        switch(s._channel){
-            case 'unknown paid channel':
-                //override s._channel default of "Unkown Paid Channel" with utm_medium if present
-                //********
-                //legacy code sets the else value to s.campaign
-                s.eVar4 = s._channel = !!s.eVar4 ? s.eVar4 : s.campaign;
-                break;
-            case 'paid search':
-                //override s._channel value with utm_medium if present
-                s.eVar4 = s._channel = !!s.eVar4 ? s.eVar4 : s.campaign;
-                //paid search keyword
-                s.eVar7 = s.eVar28 = !!s.eVar28 ? s.eVar28 : s._keywords; //set eVar7 to s._keywords if there is no utm_term
-                //search engine
-                s.eVar44 = s.eVar25 = !!s.eVar25 ? s.eVar25 : s._partner; //set eVar44 to s._partner if there is no utm_source
-                //set marketing channel first and last touch details
-                s.eVar72 = s.eVar74 = s.eVar4 + '|' + s.eVar44 + '|' + s.eVar7;
-                break;
-            case 'natural search':
-                //tracking code
-                s.campaign = 'seo|' + s._partner;
-                //marketing channel
-                s.eVar4 = s.eVar73 = s._channel = "seo"; //set CMLT & CMFT Channel
-                //********
-                //legacy code set utm_parameters, excluding utm_term, to utm_medium
-                s.eVar25 = s.eVar26 = s.eVar27 = s.eVar29 = "D=v4";
-                //seo keyword
-                //********
-                //legacy code set utm_term to s._keyword
-                s.eVar8 = s.eVar28 = s._keywords;
-                //search engine
-                s.eVar44 = s._partner;
-                //set channel marketing details
-                s.eVar72 = s.eVar74 = 'seo|' + s._partner + '|' + s._keywords; //set CMLT & CMFT Details
-                break;
-            case 'other natural referrers':
-                //tracking code
-                s.campaign = 'referrer|' + s._referringDomain;
-                //marketing channel first and last touch
-                s.eVar4 = s.eVar73 = s._channel = 'referrer';
-                //********
-                //legacy code set all utm eVars to utm_medium)
-                s.eVar25 = s.eVar26 = s.eVar27 = s.eVar28 = s.eVar29 = "D=v4";
-                //referrers (30 days) non-search natural referrers
-                s.eVar42 = s._referringDomain;
-                //set channel marketing details (first and last touch)
-                s.eVar72=s.eVar74='referrer|'+s._referringDomain;
-                break;
-            case 'typed/bookmarked':
-                //tracking code
-                s.campaign = s.eVar4 = s.eVar73 = s._channel = 'direct'; //set CMLT & CMFT Channel
-                //set channel marketing details
-                s.eVar72 = s.eVar74 = 'direct|' + s.pageName; //set CMLT & CMFT Details
-                //********
-                //legacy code set all utm eVars to utm_medium)
-                s.eVar25 = s.eVar26 = s.eVar27 = s.eVar28 = s.eVar29 = "D=v4";
-                break;
-            default:
-                s.eVar4 = s.eVar73 = s._channel;
-                //set marketing channel details to concatenated utm_parameter values (s._campaignID)
-                s.eVar72 = !!s._campaignID ? s._channel + '|' + s._campaignID : s._channel + '|' + s._referringDomain;
-                s.eVar74 = s.eVar72;
+        else if(localStorage['scFormStart']=='savings offer'){
+            s.eVar30='vyvpro resource registration';
+            s.events='event2';
+            s.prop30="D=v30";
+            localStorage.removeItem('scFormStart');
         }
-    }
-    /* end - channel manager */
-        if(s.prop1){
-        s.eVar45="dtc_"+s.prop1;
-        s.prop2=s.prop1+"_dtc";
-        s.prop3=s.prop2+"_"+s.pageName;
-        //Get Previous Page Name
-        s.prop4=s.prop2+'_'+s.getPreviousValue(!!s.pageName ? s.pageName : !!s.pageType ? s.channel+" > Error Page" : '', 's_gpv_pn', '');
-        /*Percent Page Viewed*/
-        if(s.prop4){s.prop44=s.getPercentPageViewed();}
-        if(s.pageName=="default"){s.pageName="home page";}
     }
  }
 s.doPlugins=s_doPlugins
+var scURL=document.location.pathname;
+//Set Site Vertical-Name
+    if(scURL.indexOf('/adhd/') >-1){
+        s.prop1='adhd';
+        }
+    else if(scURL.indexOf('/binge-eating-disorder/') >-1){
+        s.prop1='bed';
+        }
+    else{s.prop1="franchise";}
+    s.eVar45='vyvansepro';
+    s.eVar50='hcp';
+//Configure Page Names
+var parts = window.location.href.replace(".html","").replace("index","").replace("default.aspx","").replace('#','').split("/"),
+    total = parts.length,
+    count = 0,
+    s_pageName = "",
+    urlPath = document.URL.toLowerCase();
 
-//Onclick code for custom click and other events - begin
-scLinkCustVars="prop1,prop2,prop4,prop5,prop6,prop7,prop8,prop9,prop10,prop11,prop12,prop14,prop24,prop41,eVar45,eVar46,eVar47";
+if(document.location.pathname == "/" || document.location.pathname == "/index.html"){
+  s.pageName =  s.prop1 + ' > ' + ' > ' + "global" + ' > ' + "home".toLowerCase();
 
-$('#s3-widget-share-tab').on('click',function(){
-    console.log(s.page)
-    s.eVar22='ssstabinteract_share';
-    s.linkTrackVars="eVar30,eVar22"+','+scLinkCustVars;
-    s.events=s.linkTrackEvents='';
-    s.tl(this,'o',s.eVar22);
-})
-$('#s3-widget-send-tab').on('click',function(){
-    s.eVar22='ssstabinteract_send';
-    s.linkTrackVars="eVar30,eVar22"+','+scLinkCustVars;
-    s.events=s.linkTrackEvents='';
-    s.tl(this,'o',s.eVar22);
-})
-$('#s3-widget-save-tab').on('click',function(){
-    s.eVar22='ssstabinteract_save';
-    s.linkTrackVars="eVar30,eVar22"+','+scLinkCustVars;
-    s.events=s.linkTrackEvents='';
-    s.tl(this,'o',s.eVar22);
-})
-
-$('input.s3-form-text').on('blur',function(){
-    var scFormName='s3 share url via email';
-    var scFormField=$(this).attr('id');
-    scFormField=scFormField.replace('s3-send-','');
-    s.linkTrackVars='events,prop30,eVar30,prop34,eVar34,prop39,eVar39'+','+scLinkCustVars;
-    s.prop30=scFormName;
-    s.eVar30="D=c30";
-    s.prop34=s.prop30+'_'+scFormField;
-    s.eVar34="D=c34";
-    s.prop39=s.prop34+'_(pii)';
-    s.eVar39="D=c39";
-    s.events=s.linkTrackEvents='event3';
-    s.tl(this,'o',scFormName+'_field name click');
-})
-
-
-$('a#s3-inter-actions-continue').on('click',function(){
-    var scLinkUrl=$(this).attr('href');
-    if(scLinkUrl.indexOf('facebook')>-1){
-    s.eVar52='social share_facebook';
-    }
-    if(scLinkUrl.indexOf('twitter')>-1){
-    s.eVar52='social share_twitter';
-    }
-    if(scLinkUrl.indexOf('pinterest')>-1){
-    s.eVar52='social share_pinterest';
-    }
-    s.linkTrackVars='eVar52,eVar53,events'+','+scLinkCustVars;
-    s.events=s.linkTrackEvents="event30";
-    s.eVar53=s.pageName;
-    s.tl(this,'o', s.eVar52);
-})
-
-//ShareSendSave Submit
-$('input[type="button"]#s3-btn-send-submit').on('click',function(){
-    s.linkTrackVars='eVar53,eVar52,events'+','+scLinkCustVars;
-    s.linkTrackEvents=s.events='event30';
-    s.eVar52='social share_email sent';
-    s.eVar53='social item shared';
-    s.tl(this,'o','social item shared');
-})
-
-//6-1
-$('a.for-hcp').on('click',function(){
-    s.eVar21='internal site exit_bed ub hcp site';
-    s.linkTrackVars='eVar21'+','+scLinkCustVars;
-    s.events='';
-    s.tl(this,'e', s.eVar21);
-})
-
-//7-1
-$('a.shire-logo').on('click',function(){
-    s.eVar21='internal site exit_shire logo';
-    s.linkTrackVars='eVar21'+','+scLinkCustVars;
-    s.tl(this,'e', s.eVar21);
-})
-
-//7-2
-$('li.last a[href="http://www.shire.com/"]').on('click',function(){
-    s.eVar21='internal site exit_shireus';
-    s.linkTrackVars='eVar21'+','+scLinkCustVars;
-    s.tl(this,'e', s.eVar21);
-})
-
-//10-2, 16-8 and 17-10
-$('a#start-conversation').on('click',function(){
-    s.eVar22='nav_doctor discussion guide call out';
-    s.linkTrackVars='eVar22'+','+scLinkCustVars;
-    s.tl(this,'o', s.eVar22);
-})
-
-//10-3
-$('a#manage-BED').on('click',function(){
-    if(s.pageName)s.pageName=s.pageName.toLowerCase();
-    s.eVar22='nav_manage bed call out';
-    s.linkTrackVars='eVar22'+','+scLinkCustVars;
-    s.tl(this,'o', s.eVar22);
-})
-
-//13-1 and 14-8
-$('a.download').on('click',function(){
-    var scTextVal=$(this).text();
-    if(scTextVal.indexOf('Discussion Guide')>-1){
-        s.linkTrackVars='eVar20,events'+','+scLinkCustVars;
-        s.events=s.linkTrackEvents="event4";
-        s.eVar20='download_doctor discussion guide';
-        console.log(s.linkTrackVars);
-        s.tl(this,'d', s.eVar20);
-    }
-    if(scTextVal.indexOf('your answers')>-1){
-        s.eVar30="bed form screener";
-        s.linkTrackVars='eVar30,events'+','+scLinkCustVars;
-        s.events=s.linkTrackEvents="event2";
-        s.tl(this,'d', s.eVar30+'_form complete');
-    }
-})
-
-//13-2 and 16-7
-$('a#find-specialist').on('click',function(){
-    s.eVar22='nav_find a specialist call out';
-    s.linkTrackVars='eVar22'+','+scLinkCustVars;
-    s.tl(this,'o', s.eVar22);
-})
-
-//bed symptom screener 14-1
-//form start and yes no
-$('div#yesNoQuestion').on('click',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.events=s.linkTrackEvents="event3";
-    if(!localStorage['scEvent']){
-          s.events=s.linkTrackEvents=s.apl(s.events,'event39',',',1);
-          localStorage['scEvent']='eventset';
-    }
-    var scAns=$(this).find('input').attr('value');
-    var scQue=$(this).find('input').attr('name');
-    s.eVar34=scQue+'_'+scAns;
-    if(s.eVar34)s.eVar34=s.eVar34.toLowerCase();
-    s.eVar30='bed symptom screener';
-    s.tl(this,'o','bed symptom screener'+'_field clicked');
-})
-
-//frequencyQuestions
-$('div#frequencyQuestion').on('click',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='bed symptom screener';
-    var scAns=$(this).find('input').attr('value');
-    var scQue=$(this).find('input').attr('name');
-    s.eVar34=scQue+'_'+scAns;
-    localStorage[scQue]=scAns;
-    if(s.eVar34)s.eVar34=s.eVar34.toLowerCase();
-    s.tl(this,'o','bed symptom screener'+'_field clicked');
-})
-
-//15-1 form start/interacted
-$('div#form.send-doctor').one('click',function(){
-    s.linkTrackVars='eVar30,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.events=s.linkTrackEvents="event39,event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
-
-//15-1 first name
-$('input#hcp-firstName').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp first name';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
-
-//15-2 last name
-$('input#hcp-lastName').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp last name';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
-
-//15-3 address1
-$('input#address1').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp address 1';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
-
-//15-4 address2
-$('input#address2').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp address 2';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
-
-//15-5 city
-$('input#city').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp city';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
-
-//15-6 state
-$('select#state').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp state';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
-
-//15-7 zip
-$('input#zip').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp zip';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
-
-//15-8 form complete
-$('a#submit-button').one('click',function(){
-    s.linkTrackVars='eVar30,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.events=s.linkTrackEvents="event2";
-    s.tl(this,'o','send info kit to doctor'+'_complete');
-})
-
-//Video Handler Functions 16
-function mediaPlayHandler(val1){
-    s.linkTrackVars='eVar23,prop23'+','+scLinkCustVars;
-    s.linkTrackEvents=s.events='event5';
-    var val2='_start';
-    var val3=val1.replace(' > ','_').toLowerCase();
-    if(val3=='video_monicaseles story')val3='video_monica seles story';
-    s.eVar23=val3+val2;
-    s.prop23="D=v23";
-    s.tl(this,'o','video'+val2)
+}
+else if(parts[3] != "" && parts[4] !="" && parts[5] !="" && parts[3] != "undefined" && parts[4] !="undefined" && parts[5] !="undefined"){
+    s.pageName =  parts[3] +'|'+ parts[4] +"|"+ parts[5];
+    s.channel =  s.prop1 +'|'+ parts[3];
+}
+//Hcc&Hcp Home
+else if(parts[3] != "" && parts[4] !="" && parts[3] != "undefined" && parts[4] !="undefined"){
+    s.pageName =  parts[3] + '|' + parts[4];
+    s.channel =  s.prop1 + '|' + parts[3];
+}
+//Hcc&Hcp  Sub
+else if(parts[3] != "" && parts[3] !="undefined" ){
+ s.pageName =  parts[3];
+ s.channel =  s.prop1;
+}
+if(parts[3]=='binge-eating-disorder' && parts[4]!="" && parts[4]!="undefined" && parts[5]!="" && parts[5]!="undefined"){
+    s.pageName=parts[4]+"|"+parts[5];
+    s.channel=parts[3];
+    //console.log('page name 5');
+}
+if(parts[3]!='binge-eating-disorder' && parts[3]!='adhd'){
+    s.pageName="franchise|"+s.pageName;
 }
 
-function mediaMilestoneHandler(val1,val4){
-    var vidEvent=""
-    console.log(val1);
-    if(val4==25)vidEvent='event34';
-    else if(val4==50)vidEvent='event35';
-    else if(val4==75)vidEvent='event36';
-    s.linkTrackVars='eVar23,prop23'+','+scLinkCustVars;
-    s.linkTrackEvents=s.events=vidEvent;
-    var val3=val1.replace(' > ','_').toLowerCase();
-    if(val3=='video_monicaseles story')val3='video_monica seles story';
-    s.eVar23=val3+'_'+val4+'% milestone reached';
-    s.prop23='D=v23';
-    s.tl(this,'o','video_'+val4+'% milestone reached')
+if(typeof(s.prop1)!="undefined" && typeof(scCat)!="undefined"){
+s.prop2=s.prop1 + scCat;
 }
+if(document.location.pathname=='/'||document.location.pathname == "/default.aspx"){
+    s.pageName=s.prop1+" home page";
+    s.channel =  s.prop1;
+    }
 
-function mediaCompleteHandler(val1){
-    console.log(val1);
-    s.linkTrackVars='eVar23,prop23'+','+scLinkCustVars;
-    s.linkTrackEvents=s.events='event37';
-    var val3=val1.replace(' > ','_').toLowerCase();
-    if(val3=='video_monicaseles story')val3='video_monica seles story';
-    var val2='_complete';
-    s.eVar23=val3+val2;
-    s.prop23="D=v23";
-    s.tl(this,'o','video'+val2)
-}
-//16-2
-$('a.arrow.view-transcript.down').on('click',function(){
-    var scTran=$('div#transcriptContainer div.show').attr('class');
-    var parts = scTran.split('-', 2);
-    var scTranName=parts[0];
-    if(scTranName=='sunny'){scTranNameF='sunny sea gold vid';}
-    else if(scTranName=='monica'){scTranNameF='monica seles vid';}
-    if(localStorage['vidTrNa']!=scTranName){
-        localStorage['vidTrNa']=scTranName;
-        s.events='';
-        s.linkTrackVars='eVar22,prop22'+','+scLinkCustVars;
-        s.eVar22='transcript expand_'+scTranNameF+'_patient experiences';
-        s.tl(this,'o','transcript_'+scTranNameF);
-    }
-    else{
-        localStorage['vidTrNa']="";
-    }
-})
-//17-1 through 17-9
-$('div.buttons a.continue').on('click',function(){
-    var scLinkUrl=$(this).attr('href');
-    scLinkUrl=scLinkUrl.replace('https://','').replace('.aspx','').replace('http://','').replace('www.','');
-    s.eVar21='external exit_'+scLinkUrl;
-    s.linkTrackVars='eVar21'+','+scLinkCustVars;
-    s.tl(this,'e','external exit_'+scLinkUrl);
-})
-//17-11
-$('a#share-their-experiences').on('click',function(){
-    s.eVar22='nav_bed patients experiences call out';
-    s.linkTrackVars='eVar22'+','+scLinkCustVars;
-    s.tl(this,'o', s.eVar22);
-})
-//Onclick code for custom click and other events - end
+if(s.pageName){s.pageName=s.pageName.replace(/-/g,' ').toLowerCase();}
+if(s.channel){s.channel=s.channel.replace(/-/g,' ').toLowerCase();}
+if(document.location.pathname=="/binge-eating-disorder/"){s.pageName="bed home page"}
+if(s.pageName=='savings'){s.pageName='franchise|savings offer';}
+
     /** Visit behavior variables begin **/
     s.visitPageNum=getVisitPageViews();
     // On the first page of the visit...
@@ -583,20 +248,448 @@ $('a#share-their-experiences').on('click',function(){
     s.prop10 = "Visit Page View: " + s.visitPageNum;
     s.prop11 = "Lifetime Page Views: " + getLifetimePageViews();
 
-
-    //Set value of data object in signal to a variable
-    s.eVar73=bt_data('data \> report suite');
-    s.eVar74=bt_data('scottdeletesample');
     //Set pageName to prop14 and eVar46
     s.prop14=s.eVar46="D=pageName";
     s.prop41=s.eVar47="D=g";
+    s.eVar45="D=c1";
+//Onclick code for custom click and other events - begin
+scLinkCustVars="prop1,prop2,prop4,prop5,prop6,prop7,prop8,prop9,prop10,prop11,prop12,prop14,prop24,prop41,eVar45,eVar46,eVar47";
 
-function shareSendSave() { 
-        //s.eVar5=eventObj.provider; 
-        //s.linkTrackVars="eVar5,events"; 
-        //s.linkTrackEvents=s.events="event39"; 
-        //s.tl(this,'o', s.eVar5 + " login"); 
-} 
+//7-1 to 7-5
+$('section.top_row li').on('mousedown',function(){
+    var scVal=$(this).find('a').attr('id');
+    if(typeof scVal!=="undefined"){
+        if(scVal.indexOf('EvokeHyperLink2')>-1){scFVal='nav_view adhd callout_global header';}
+        else if(scVal.indexOf('EvokeHyperLink3')>-1){scFVal='nav_view bed callout_global header';}
+        else if(scVal.indexOf('EvokeHyperLink4')>-1){scFVal='download_prescribing info';}
+        else if(scVal.indexOf('EvokeHyperLink1')>-1){scFVal='download_medication guide';}
+    }
+    else if(!scVal){
+        scVal=$(this).find('a').attr('href');
+        if(scVal.indexOf('vyvanse.com')>-1){scFVal='internal site exit_vyvanse.com';}
+    }
+    s.eVar22=scFVal;
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+
+//8-1 8-2 Download Prescribing Info paragraph
+$('a[href*="pi.shirecontent"]').on('click',function(){
+    s.eVar20='download_prescribing info';
+    s.linkTrackVars="events,eVar20"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='event4';
+    s.tl(this,'d',s.eVar20);
+})
+//8-3
+$('a[href*="medguide.shirecontent"]').on('click',function(){
+    s.eVar20='download_medication guide';
+    s.linkTrackVars="events,eVar20"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='event4';
+    s.tl(this,'d',s.eVar20);
+})
+//8-4
+$('a[href="http://www.shire.com/shireplc/en/home"]').on('click',function(){
+    s.eVar20='internal site exit_shire us';
+    s.linkTrackVars="events,eVar20"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='event4';
+    s.tl(this,'e',s.eVar20);
+})
+//8-5
+$('a[href="http://www.shirecares.com"]').on('click',function(){
+    s.eVar20='internal site exit_shire cares';
+    s.linkTrackVars="events,eVar20"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='event4';
+    s.tl(this,'e',s.eVar20);
+})
+//9-1
+$('a.hero[href="/adhd/"]').on('click',function(){
+    s.eVar22='nav_vyv for adhd brandbox interaction_global header';
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+//9-2
+$('a.hero.last[href="/binge-eating-disorder/"]').on('click',function(){
+    s.eVar22='nav_vyv for bed brandbox interaction_global header';
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+//9-3
+$('select#ddlState').one('click',function(){
+    s.eVar22='nav_formulary tool interaction';
+    s.linkTrackVars="events,eVar22,prop30,eVar30"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='event39';
+    s.prop30='formulary coverage';
+    s.eVar30='D=c30';
+    s.tl(this,'o',s.prop30+"_touched");
+    $('select#ddlState').on('click',function(){
+        s.linkTrackVars="eVar22"+','+scLinkCustVars;
+        s.eVar22='nav_formulary tool interaction';
+        s.tl(this,'o',s.eVar22);
+    })
+})
+//9-4
+//9-5
+$('select#ddlState').on('blur',function(){
+    //var e = document.getElementById("ddlState");
+    //var strUser = e.options[e.selectedIndex].value;
+    s.events=s.linkTrackEvents='event3';
+    if(!localStorage['forTool']){
+        s.events=s.linkTrackEvents='event3,event39';
+        localStorage['forTool']='start';
+    }
+    s.eVar34='step 1_select state';
+    s.prop30='formulary coverage';
+    s.eVar30='D=c30';
+    s.linkTrackVars="eVar34,eVar30,prop30,events"+','+scLinkCustVars;
+    s.tl(this,'o',s.prop30+'_interaction');
+})
+//9-6
+$('select#ddlCoverage').on('blur',function(){
+    //var e = document.getElementById("ddlState");
+    //var strUser = e.options[e.selectedIndex].value;
+    s.events=s.linkTrackEvents='event3';
+    if(!localStorage['forTool']){
+        s.events=s.linkTrackEvents='event39,event3';
+        localStorage['forTool']='start';
+    }
+    s.eVar34='step 2_select coverage type';
+    s.prop30='formulary coverage';
+    s.eVar30='D=c30';
+    s.linkTrackVars="eVar34,eVar30,prop30,events"+','+scLinkCustVars;
+    s.tl(this,'o',s.prop30+'_interaction');
+})
+//9-7
+$('select#ddlProviders').on('click',function(){
+    //var e = document.getElementById("ddlState");
+    //var strUser = e.options[e.selectedIndex].value;
+    s.eVar34='step 3_select health plan type';
+    s.prop30='formulary coverage';
+    s.linkTrackVars="eVar34,eVar30,prop30,events"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='event3';
+    s.tl(this,'o',s.prop30+'_interaction');
+})
+//9-8 reg link not right rail
+$('div.franchise-callouts a[href*=".com/vyvansepro-resource/"]').on('click',function(){
+    s.eVar22='nav_reg for updates';
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+//9-9 reg link not right rail
+$('div.franchise-callouts a[href*=".com/savings/"]').on('click',function(){
+    s.eVar22='nav_reg for savings';
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+//9-10 reg link not right rail
+$('div.franchise-callouts a[href*="/health-care-payers/"]').on('click',function(){
+    s.eVar22='nav_health care payers';
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+//9-11 reg link not right rail
+$('div.franchise-callouts a[href*="/prescription-coverage/"]').on('click',function(){
+    s.eVar22='nav_prescript coverage';
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+//9-12 reg link not right rail
+$('div.franchise-callouts a[href*="/health-plan-benefits/"]').on('click',function(){
+    s.eVar22='nav_health plan benefits';
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+//9-13 reg link not right rail
+$('div.franchise-callouts a[href*="/affordable-care-act/"]').on('click',function(){
+    s.eVar22='nav_affordable care act';
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+//10-1 All right rail clicks
+$('section#franchiseNav a').on('click',function(){
+    var scForTool=$(this).closest("li").attr('class');
+    s.eVar22='nav_'+scForTool+' right rail call out';
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+    //console.log(scForTool);
+})
+//13-5
+$('div.details a[href="/formulary-coverage/"]').on('click',function(){
+    s.eVar22='nav_formulary contextual call out';
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+
+//15-5
+$('div.details a[href="/binge-eating-disorder/about-bed/"].btn').on('click',function(){
+    s.eVar22='nav_bed overview call out';
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+//15-6
+$('div.details a[href="/binge-eating-disorder/about-bed/screening/"].btn').on('click',function(){
+    s.eVar22='nav_bed screening call out';
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+//15-7
+$('div.details a[href="/binge-eating-disorder/clinical-data/"].btn').on('click',function(){
+    s.eVar22='nav_clinical results call out';
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+//16-5
+$('div.recognize-callout a[href="/binge-eating-disorder/about-bed/recognizing-bed/"]').on('click',function(){
+    s.eVar22='nav_recognize bed in patients call out';
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+//18-5
+$('div.recognize-callout.diagnosed a[href="/binge-eating-disorder/about-bed/screening/"]').on('click',function(){
+    s.eVar22='nav_learn to better screen call out';
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+//19-5
+$('div.recognize-callout.discussion a').on('click',function(){
+    s.eVar20='download_physician discussion guide pdf';
+    s.linkTrackVars="event4,eVar20"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='event4';
+    s.tl(this,'d',s.eVar20);
+})
+//19-6
+$('div.recognize-callout.diagnosed.screening a').on('click',function(){
+    s.eVar20='download_bed screener pdf';
+    s.linkTrackVars="eVar20"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='event4';
+    s.tl(this,'o',s.eVar20);
+})
+//23-5,24-1,25-1
+$('div.tabs div.wrapper li a').on('click',function(){
+    var scTab=$(this).data('tab-content');
+    if(scTab=="patients"){scTab="your patients";}
+    else if(scTab=="coordinators"){scTab="reimbursement";}
+    s.eVar22='nav_tab for '+scTab;
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+//23-6
+$('div.description a[href*="/vyvansepro-resource/"]').on('click',function(){
+    s.eVar22='nav_register for bed info call out'
+    s.linkTrackVars="eVar22"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o',s.eVar22);
+})
+//23-7
+
+
+
+
+
+// //23-8
+// $('div.recognize-callout.diagnosed.screening a').on('click',function(){
+//     s.eVar20='download_bed screener pdf';
+//     s.linkTrackVars="eVar20"+','+scLinkCustVars;
+//     s.events=s.linkTrackEvents='event4';
+//     s.tl(this,'o',s.eVar20);
+// })
+//23-9
+
+//24-1
+$('div.recognize-callout.diagnosed.screening a').on('click',function(){
+    s.eVar20='download_bed screener pdf';
+    s.linkTrackVars="eVar20"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='event4';
+    s.tl(this,'o',s.eVar20);
+})
+//25-2
+if(s.pageName=="bed|bed resource center"){
+    //console.log('function entered');
+    $('div.box div.description').on('click',function(){
+        var scHead=$(this).closest(".description").find('h4').text();
+        if(scHead.indexOf('Adults Brochure')>-1){
+            s.eVar20='download_vyvanse for binge eating disorder brochure';
+            s.linkTrackVars="events,eVar20"+','+scLinkCustVars;
+            s.events=s.linkTrackEvents='event4';
+            s.tl(this,'d',s.eVar20);
+        }
+        //console.log(scHead);
+    })
+}
+
+
+
+//25-3
+$('div.box div.description a.link[href="http://www.shire.com/shireplc/en/patient-support"]').on('click',function(){
+    s.eVar21='internal site exit_shire cares';
+    s.linkTrackVars="eVar21"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'e',s.eVar21);
+})
+//25-4
+$('a.cont').on('click',function(){
+    var scLink=$(this).attr('href');
+    var scFLink="";
+    if(scLink.indexOf('allianceforeatingdisorders')>-1){scFLink="alliance for eating disorder awareness";}
+    else if(scLink.indexOf('ama-assn.org/ama')>-1){scFLink="american medical association";}
+    else if(scLink.indexOf('psychiatry.org')>-1){scFLink="american psychiatric association";}
+    else if(scLink.indexOf('apa.org')>-1){scFLink="american psychological association";}
+    else if(scLink.indexOf('bedaonline.com')>-1){scFLink="binge eating disorder association";}
+    else if(scLink.indexOf('nami.org')>-1){scFLink="national alliance for mental illness";}
+    else if(scLink.indexOf('nationaleatingdisorders.org')>-1){scFLink="national eating disorders association";}
+    else{
+
+    }
+    s.eVar21="external site exit_"+scFLink;
+    s.linkTrackVars="eVar21"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents="";
+    if(s.eVar21)s.eVar21=s.eVar21.toLowerCase();
+    s.tl(this,'e',s.eVar21);
+})
+
+
+
+//29-5
+$('p.body b a[href*="vyvansesavings.com"]').on('click',function(){
+    s.eVar21='internal site exit_vyvanse savings';
+    s.linkTrackVars="eVar21"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'e',s.eVar21);
+})
+//29-6 Savings Form
+$('div.form-wrapper-inner').one('click',function(){
+    if(s.pageName.indexOf('vyvansepro resource')>-1){
+        s.eVar30='vyvpro resource registration';
+    }
+    else if(s.pageName=='franchise|savings'){
+        s.eVar30='savings offer';
+    }
+    s.prop30="D=v30";
+    s.linkTrackVars="events,eVar30,prop30"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='event39';
+    localStorage['scFormStart']=s.eVar30;
+    s.tl(this,'o',s.eVar30+'_start');
+})
+//29-6 form field populated - text fields
+$('input[type="text"]').on('blur',function(){
+    if(s.pageName.indexOf('vyvansepro resource')>-1){
+        s.eVar30='vyvpro resource registration';
+    }
+    else if(s.pageName.indexOf('savings offer')>-1){
+        s.eVar30='savings offer';
+    }
+    var scFVal=$(this).attr('placeholder');
+    if(typeof(scFVal)=="undefined"){
+        var scFFVal=$(this).attr('id');
+        if(scFFVal.indexOf('tbEmail')>-1){var scFinal='email';}
+        else if(scFFVal.indexOf('ConfirmEmail')>-1){var scFinal='reenter email';}
+        else if(scFFVal.indexOf('tbAddress1')>-1){var scFinal='address1';}
+        else if(scFFVal.indexOf('tbAddress2')>-1){var scFinal='suite';}
+        else if(scFFVal.indexOf('tbCity')>-1){var scFinal='city';}
+        else if(scFFVal.indexOf('tbZip')>-1){var scFinal='zip';}
+        else if(scFFVal.indexOf('tbMENumber')>-1){var scFinal='me number';}
+        s.eVar34=scFinal;
+    }
+    else{
+    s.eVar34=scFVal;
+    }
+    //if(s.eVar34)s.eVar34=s.eVar30+'|'+s.eVar34;
+    if(s.eVar34)s.eVar34=s.eVar34.toLowerCase();
+    s.prop30="D=v30";
+    s.linkTrackVars="events,eVar30,prop30,eVar34"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='event3';
+    localStorage['scFormStart']=s.eVar30;
+    s.tl(this,'o',s.eVar30+'_'+s.eVar34);
+})
+//29-6 form field populated - dropdowns
+$('select[id*="ddlState"], select[id*="ddlSpecialty"], select[id*="Patient"], select[id*="ddlInformation"]').on('blur',function(){
+    console.log('something clicked');
+    var scFName="";
+    var scFVal="";
+    var scFName="";
+    if(s.pageName.indexOf('vyvansepro resource')>-1){
+        scFName='vyvpro resource registration';
+        scFVal=$(this).attr('id');
+        SCFormTrack(scFName,scFVal);
+    }
+    else if(s.pageName=="franchise|savings"){
+        scFName='savings offer';
+        scFVal=$(this).attr('id');
+        SCFormTrack(scFName,scFVal);
+    }
+})
+function SCFormTrack(scFName,scFVal){
+    console.log('scFormTrack');
+    s.eVar30=scFName;
+    var scDd=scFVal;
+    if(scDd.indexOf('ddlState')>-1){s.eVar34='state';}
+    else if(scDd.indexOf('ddlSpecialty')>-1){s.eVar34='profession';}
+    else if(scDd.indexOf('ddlPatient')>-1){s.eVar34='patients condition';}
+    else if(scDd.indexOf('ddlInformation')>-1){s.eVar34='receive info about';}
+    if(s.eVar34)s.eVar34=s.eVar34.toLowerCase();
+    s.prop30="D=v30";
+    s.linkTrackVars="events,eVar30,prop30,eVar34"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='event3';
+    localStorage['scFormStart']=s.eVar30;
+    s.tl(this,'o',s.eVar30+'_'+s.eVar34);
+}
+//29-20 opt-in
+$('input[type="checkbox"]').on('click',function(){
+    if(s.pageName.indexOf('vyvansepro resource')>-1){
+        s.eVar30='vyvpro resource registration';
+    }
+    else if(s.pageName.indexOf('savings offer')>-1){
+        s.eVar30='savings offer';
+    }
+    s.eVar34='opt in check box';
+    s.prop30="D=v30";
+    s.linkTrackVars="events,eVar30,prop30,eVar34"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='event3';
+    localStorage['scFormStart']=s.eVar30;
+    s.tl(this,'o',s.eVar30+'_'+s.eVar34);
+})
+//29-21 opt-in
+$('div.submit').on('click',function(){
+    if(s.pageName.indexOf('vyvansepro resource')>-1){
+        s.eVar30='vyvpro resource registration';
+    }
+    else if(s.pageName.indexOf('savings offer')>-1){
+        s.eVar30='savings offer';
+    }
+    s.eVar34='submit';
+    s.prop30="D=v30";
+    s.linkTrackVars="events,pageName,eVar30,prop30,eVar34"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='event3';
+    localStorage['scFormStart']=s.eVar30;
+    s.tl(this,'o',s.eVar30+'_'+s.eVar34);
+})
+//29 form complete in do plugins so event2 will set
+//30-5
+if(s.pageName.indexOf('savings|thank you')>-1){
+    $('a[id*="btnDownload"]').on('click',function(){
+        s.eVar20='download_savings offer coupon pdf';
+        s.linkTrackVars='events,eVar20'+','+scLinkCustVars;
+        s.events=s.linkTrackEvents='event4';
+        s.tl(this,'d',s.eVar20);
+    })
+}
+//Onclick code for custom click and other events - end
 
 /**********SiteCatalyst Utility Plugins Compatible with both H27.4 and App Measurement 1.4  -begin *****/
 
@@ -659,6 +752,47 @@ function getCookie(c_name) {
     }
     return false;
 }
+
+(function ($) {
+ 
+/**
+* @function
+* @property {object} jQuery plugin which runs handler function once specified element is inserted into the DOM
+* @param {function} handler A function to execute at the time when the element is inserted
+* @param {bool} shouldRunHandlerOnce Optional: if true, handler is unbound after its first invocation
+* @example $(selector).waitUntilExists(function);
+*/
+ 
+$.fn.waitUntilExists    = function (handler, shouldRunHandlerOnce, isChild) {
+    var found    = 'found';
+    var $this   = $(this.selector);
+    var $elements   = $this.not(function () { return $(this).data(found); }).each(handler).data(found, true);
+    
+    if (!isChild)
+    {
+        (window.waitUntilExists_Intervals = window.waitUntilExists_Intervals || {})[this.selector] =
+            window.setInterval(function () { $this.waitUntilExists(handler, shouldRunHandlerOnce, true); }, 500)
+        ;
+    }
+    else if (shouldRunHandlerOnce && $elements.length)
+    {
+        window.clearInterval(window.waitUntilExists_Intervals[this.selector]);
+    }
+    
+    return $this;
+}
+}(jQuery));
+
+function scFormCov(){
+    //console.log('tester111');
+    s.eVar30="formulary coverage";
+    s.prop30="D=v30";
+    s.linkTrackVars="events,eVar30,prop30"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='event2';
+    s.tl(this,'o',s.eVar30+'|complete');
+}
+$('span#formularyResultsZip').waitUntilExists(scFormCov);
+
 
 /** Get Page Views count per Visit, increments the count and overwrites the same cookie extending the expiration by 30 minutes **/
 function getVisitPageViews() {
@@ -788,69 +922,44 @@ s.getPercentPageViewed=new Function("n",""
 // +"p?p:t;h=s.linkLeaveQueryString||i<0?h:h.substring(0,i);if(s.lt(h)=="
 // +"'e')s.linkType='e';else h='';s[n]=t;return e?o:h;");
 
+ 
+/* Plugin: setupLinkTrack v3.02AM */
+s.setupLinkTrack=new Function("vl","c","e",""
++"var cv=s.c_r(c);if(vl){var vla=vl.split(',');}if(cv!=''){var cva=s."
++"split(cv,'^^');if(cva[1]!=''){for(x in vla){s[vla[x]]=cva[x];if(e){"
++"s.events=s.apl(s.events,e,',',2);}}}}s.c_w(c,'',0);if(typeof s.link"
++"Object!='undefined'&&s.hbx_lt!='manual'){s.lta=[];if(typeof s.pageN"
++"ame!='undefined')s.lta[0]=s.pageName;if(typeof s.linkObject!=null){"
++"slo=s.linkObject;if(s.linkObject!=0){if(s.linkObject.getAttribute('"
++"name')!=null){var b=s.linkObject.getAttribute('name');if(b.indexOf("
++"'&lpos=')>-1){s.lta[3]=b.match('\&lpos\=([^\&]*)')[1];}if(b.indexOf"
++"('&lid=')>-1){s.lta[1]=b.match('\&lid\=([^\&]*)')[1];}}}if(typeof s"
++".lta[1]=='undefined'){if(s.linkName!=0){s.lta[1]=s.linkName;}else i"
++"f(s.linkObject!=0){if(s.linkObject.innerHTML.indexOf('<img')>-1){s."
++"lta[1]=s.linkObject.innerHTML.match('src=\"([^\"]*)')[1]}else{s.lta[1"
++"]=s.linkObject.innerHTML;}}}s.lta[2]=s.pageName+' | '+s.lta[1];}if("
++"s.linkType!=0){for(var x=0;x<vla.length;x++){s[vla[x]]=s.cleanStr(s"
++".lta[x]);if(e){s.events=s.apl(s.events,e,',',2);s.linkTrackVars=s.a"
++"pl(s.linkTrackVars,'events',',',2);}}s.linkTrackVars=s.apl(s.linkTr"
++"ackVars,vl,',',2);}else{if(s.lta[1]){var tcv='';for(var x=0;x<s.lta"
++".length;x++){tcv+=s.cleanStr(s.lta[x])+'^^'}s.c_w(c,tcv)}}s.lta=nul"
++"l;}");
+s.cleanStr = function(a){
+    if(typeof a != 'undefined'){
+        a = a.replace(/<\/?span[^>]*>/g, '');
+        return a;
+    }
+}
 
-/* channelManager v2.85AM - Tracking External Traffic */
-s.channelManager=new Function("a","b","c","d","e","f","g",""
-+"var s=this,h=new Date,i=0,j,k,l,m,n,o,p,q,r,t,u,v,w,x,y,z,A,B,C,D,E"
-+",F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T;h.setTime(h.getTime()+1800000);if(e)"
-+"{i=1;if(s.c_r(e))i=0;if(!s.c_w(e,1,h))s.c_w(e,1,0);if(!s.c_r(e))i=0"
-+";if(f&&s.c_r('s_tbm'+f))i=0;}j=s.referrer?s.referrer:document.refer"
-+"rer;j=unescape(j.toLowerCase());if(!j)k=1;else {l=j.indexOf('?')>-1"
-+"?j.indexOf('?'):j.length;m=j.substring(0,l);n=s.split(j,'/');n=s.sp"
-+"lit(n[2],'?');o=n[0].toLowerCase();p=s.linkInternalFilters.toLowerC"
-+"ase();p=s.split(p,',');for(q=0;q<p.length;q++){r=o.indexOf(p[q])==-"
-+"1?'':j;if(r)break;}}if(!r&&!k){t=j;u=v=o;w='Other Natural Referrers"
-+"';x=s.seList+'>'+s._extraSearchEngines;if(d==1){m=s.replace(m,'oogl"
-+"e','%');m=s.replace(m,'ahoo','^');j=s.replace(j,'as_q','*');}y=s.sp"
-+"lit(x,'>');for(z=0;z<y.length;z++){A=y[z];A=s.split(A,'|');B=s.spli"
-+"t(A[0],',');for(C=0;C<B.length;C++){D=m.indexOf(B[C]);if(D>-1){if(A"
-+"[2])E=v=A[2];else E=o;if(d==1){E=s.replace(E,'#',' - ');j=s.replace"
-+"(j,'*','as_q');E=s.replace(E,'^','ahoo');E=s.replace(E,'%','oogle')"
-+";}F=s.split(A[1],',');for(G=0;G<F.length;G++){if(j.indexOf(F[G]+'='"
-+")>-1||j.indexOf('https://www.google.')==0||j.indexOf('http://r.sear"
-+"ch.yahoo.com')==0)H=1;I=s.Util.getQueryParam(F[G],j).toLowerCase();"
-+"if(H||I)break;}}if(H||I)break;}if(H||I)break;}}if(!r||g!='1'){J=s.s"
-+"plit(a,',');K=0;while(!T&&K<J.length){T=s.Util.getQueryParam(J[K],'"
-+"',b);K++;}if(T){v=T;if(E)w='Paid Search';else w='Unknown Paid Chann"
-+"el';}if(!T&&E&&H){v=E;w='Natural Search';}}if(i&&k&&!T)t=u=v=w='Typ"
-+"ed/Bookmarked';J=s._channelDomain;if(J&&o&&!r){K=s.split(J,'>');for"
-+"(L=0;L<K.length;L++){M=s.split(K[L],'|');N=s.split(M[1],',');O=N.le"
-+"ngth;for(P=0;P<O;P++){Q=N[P].toLowerCase();R=o.indexOf(Q);if(R>-1){"
-+"w=M[0];break;}}if(R>-1)break;}}J=s._channelParameter;if(J){K=s.spli"
-+"t(J,'>');for(L=0;L<K.length;L++){M=s.split(K[L],'|');N=s.split(M[1]"
-+",',');O=N.length;for(P=0;P<O;P++){R=s.Util.getQueryParam(N[P]);if(R"
-+"){w=M[0];break;}}if(R)break;}}J=s._channelPattern;if(J){K=s.split(J"
-+",'>');for(L=0;L<K.length;L++){M=s.split(K[L],'|');N=s.split(M[1],',"
-+"');O=N.length;for(P=0;P<O;P++){Q=N[P].toLowerCase();R=T.toLowerCase"
-+"();S=R.indexOf(Q);if(S==0){w=M[0];break;}}if(S==0)break;}}S=w?T+u+w"
-+"+I:'';c=c?c:'c_m';if(c!='0')S=s.getValOnce(S,c,0);if(S){s._campaign"
-+"ID=T?T:'n/a';s._referrer=t?t:'n/a';s._referringDomain=u?u:'n/a';s._"
-+"campaign=v?v:'n/a';s._channel=w?w:'n/a';s._partner=E?E:'n/a';s._key"
-+"words=H?I?I:'Keyword Unavailable':'n/a';if(f&&w!='Typed/Bookmarked'"
-+"){h.setTime(h.getTime()+f*86400000);s.c_w('s_tbm'+f,1,h);}}else s._"
-+"campaignID=s._referrer=s._referringDomain=s._campaign=s._channel=s."
-+"_partner=s._keywords='';");
-/* Top 130 - Grouped */
-s.seList="google.,googlesyndication.com,.googleadservices.com|q,as_q|"
-+"Google>bing.com|q|Bing>yahoo.com,yahoo.co.jp|p,va|Yahoo!>ask.jp,ask"
-+".co|q,ask|Ask>.aol.,suche.aolsvc.de|q,query|AOL>altavista.co,altavi"
-+"sta.de|q,r|AltaVista>.mywebsearch.com|searchfor|MyWebSearch>webcraw"
-+"ler.com|q|WebCrawler>wow.com|q|Wow>infospace.com|q|InfoSpace>blekko"
-+".com|q|Blekko>dogpile.com|q|DogPile>alhea.com|q|Alhea>goduckgo.com|"
-+"q|GoDuckGo>info.com|qkw|Info.com>contenko.com|q|Contenko>www.baidu."
-+"com|wd|Baidu>daum.net,search.daum.net|q|Daum>icqit.com|q|icq>myway."
-+"com|searchfor|MyWay.com>naver.com,search.naver.com|query|Naver>nets"
-+"cape.com|query,search|Netscape Search>reference.com|q|Reference.com"
-+">seznam|w|Seznam.cz>abcsok.no|q|Startsiden>tiscali.it,www.tiscali.c"
-+"o.uk|key,query|Tiscali>virgilio.it|qs|Virgilio>yandex|text|Yandex.r"
-+"u>optimum.net|q|Optimum Search";
+
+ 
 
 /********** Siteat Plugins for specific sites -end ***********/
 
 
 //Set Tracking Server
-s.trackingServer="metrics.vyvanse.com";
-s.trackingServerSecure="smetrics.vyvanse.com";
+s.trackingServer="metrics.vyvansepro.com";
+s.trackingServerSecure="smetrics.vyvansepro.com";
 
 /*
  ============== DO NOT ALTER ANYTHING BELOW THIS LINE ! ===============
