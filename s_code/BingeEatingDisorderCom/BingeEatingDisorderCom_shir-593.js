@@ -49,6 +49,7 @@ s.linkTrackEvents="None"
 //s.ActionDepthTest=true;
 s.cookieDomain=document.location.hostname;
 s.cookiePath="/";
+var scURL=document.location.pathname;
 
 s.usePlugins=true
 function s_doPlugins(s) {
@@ -403,11 +404,12 @@ $('a.download').on('click',function(){
         s.eVar20='download_doctor discussion guide';
         s.tl(this,'d', s.eVar20);
     }
-    if(scTextVal.indexOf('your answers')>-1){
+    if(scTextVal.indexOf('your answers')>-1 && localStorage['scEvent']=='eventset'){
         s.eVar30="bed form screener";
         s.linkTrackVars='eVar30,events'+','+scLinkCustVars;
         s.events=s.linkTrackEvents="event2";
-        s.tl(this,'d', s.eVar30+'_form complete');
+        s.tl(this,'o', s.eVar30+'_form complete');
+        localStorage.removeItem('scEvent');
     }
 })
 
@@ -420,6 +422,10 @@ $('a#find-specialist').on('click',function(){
 
 //bed symptom screener 14-1
 //form start and yes no
+console.log(scURL);
+if(scURL.indexOf('/questions-to-ask')>-1){
+    localStorage.removeItem('scEvent');
+}
 $('div#yesNoQuestion').on('click',function(){
     s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
     s.events=s.linkTrackEvents="event3";
@@ -429,6 +435,8 @@ $('div#yesNoQuestion').on('click',function(){
     }
     var scAns=$(this).find('input').attr('value');
     var scQue=$(this).find('input').attr('name');
+    if(scQue=="questionoverReating"){scQue="question1"}
+    else if(scQue=="questiondistressed"){scQue="question2"}
     s.eVar34=scQue+'_'+scAns;
     if(s.eVar34)s.eVar34=s.eVar34.toLowerCase();
     s.eVar30='bed symptom screener';
@@ -439,10 +447,19 @@ $('div#yesNoQuestion').on('click',function(){
 $('div#frequencyQuestion').on('click',function(){
     s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
     s.eVar30='bed symptom screener';
+    s.events=s.linkTrackEvents="event3";
+    if(!localStorage['scEvent']){
+          s.events=s.linkTrackEvents=s.apl(s.events,'event39',',',1);
+          localStorage['scEvent']='eventset';
+    }
     var scAns=$(this).find('input').attr('value');
     var scQue=$(this).find('input').attr('name');
+    if(scQue=="question0"){scQue="question3"}
+    else if(scQue=="question1"){scQue="question4"}
+    else if(scQue=="question2"){scQue="question5"}
+    else if(scQue=="question3"){scQue="question6"}
+    else if(scQue=="question4"){scQue="question7"}
     s.eVar34=scQue+'_'+scAns;
-    localStorage[scQue]=scAns;
     if(s.eVar34)s.eVar34=s.eVar34.toLowerCase();
     s.tl(this,'o','bed symptom screener'+'_field clicked');
 })
