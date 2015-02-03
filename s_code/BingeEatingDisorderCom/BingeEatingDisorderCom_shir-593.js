@@ -4,6 +4,32 @@
 // Include s.account=s_account in the Additional Configuration box within the SiteCatalyst Pageload Tag Attributes
 // library|bingeeatingdisorders|shir-593
 s = new AppMeasurement();
+//Wait until exists function
+(function ($) {
+    /**
+    * @function
+    * @property {object} jQuery plugin which runs handler function once specified element is inserted into the DOM
+    * @param {function} handler A function to execute at the time when the element is inserted
+    * @param {bool} shouldRunHandlerOnce Optional: if true, handler is unbound after its first invocation
+    * @example $(selector).waitUntilExists(function);
+    */
+$.fn.waitUntilExists    = function (handler, shouldRunHandlerOnce, isChild) {
+    var found   = 'found';
+    var $this   = $(this.selector);
+    var $elements   = $this.not(function () { return $(this).data(found); }).each(handler).data(found, true);
+    if (!isChild)
+    {
+        (window.waitUntilExists_Intervals = window.waitUntilExists_Intervals || {})[this.selector] =
+            window.setInterval(function () { $this.waitUntilExists(handler, shouldRunHandlerOnce, true); }, 500)
+        ;
+    }
+    else if (shouldRunHandlerOnce && $elements.length)
+    {
+        window.clearInterval(window.waitUntilExists_Intervals[this.selector]);
+    }
+    return $this;
+}
+}($));
 
 /************************** CONFIG SECTION **************************/
 /* You may add or alter any code config here. */
@@ -271,7 +297,6 @@ s.doPlugins=s_doPlugins
 scLinkCustVars="prop1,prop2,prop4,prop5,prop6,prop7,prop8,prop9,prop10,prop11,prop12,prop14,prop24,prop41,eVar45,eVar46,eVar47";
 
 $('#s3-widget-share-tab').on('click',function(){
-    console.log(s.page)
     s.eVar22='ssstabinteract_share';
     s.linkTrackVars="eVar30,eVar22"+','+scLinkCustVars;
     s.events=s.linkTrackEvents='';
@@ -328,7 +353,7 @@ $('input[type="button"]#s3-btn-send-submit').on('click',function(){
     s.linkTrackVars='eVar53,eVar52,events'+','+scLinkCustVars;
     s.linkTrackEvents=s.events='event30';
     s.eVar52='social share_email sent';
-    s.eVar53='social item shared';
+    s.eVar53=s.pageName;
     s.tl(this,'o','social item shared');
 })
 
@@ -376,7 +401,6 @@ $('a.download').on('click',function(){
         s.linkTrackVars='eVar20,events'+','+scLinkCustVars;
         s.events=s.linkTrackEvents="event4";
         s.eVar20='download_doctor discussion guide';
-        console.log(s.linkTrackVars);
         s.tl(this,'d', s.eVar20);
     }
     if(scTextVal.indexOf('your answers')>-1){
@@ -423,84 +447,100 @@ $('div#frequencyQuestion').on('click',function(){
     s.tl(this,'o','bed symptom screener'+'_field clicked');
 })
 
-//15-1 form start/interacted
-$('div#form.send-doctor').one('click',function(){
+//15-1 form start
+$('div#form-content div#open-form').one('click',function(){
     s.linkTrackVars='eVar30,events'+','+scLinkCustVars;
     s.eVar30='send info kit to doctor';
-    s.events=s.linkTrackEvents="event39,event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
+    s.events=s.linkTrackEvents="event1";
+    s.tl(this,'o','send info kit to doctor'+'_form expanded');
+    })
 
-//15-1 first name
-$('input#hcp-firstName').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
+//15-1 form touched
+$('div#collapsed-content').one('click',function(){
+    var test=$(this).attr('id');
+    s.linkTrackVars='eVar30,events'+','+scLinkCustVars;
     s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp first name';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
+    s.events=s.linkTrackEvents='event39';
+    s.tl(this,'o','send info kit to doctor'+'_form touched');
+    //15-1 first name
+    $('input#hcp-firstName').on('blur',function(){
+        s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
+        s.eVar30='send info kit to doctor';
+        s.eVar34='field name_hcp first name';
+        s.events=s.linkTrackEvents="event3";
+        s.tl(this,'o','send info kit to doctor'+'_field clicked');
+    })
 
-//15-2 last name
-$('input#hcp-lastName').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp last name';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
+    //15-2 last name
+    $('input#hcp-lastName').on('blur',function(){
+        s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
+        s.eVar30='send info kit to doctor';
+        s.eVar34='field name_hcp last name';
+        s.events=s.linkTrackEvents="event3";
+        s.tl(this,'o','send info kit to doctor'+'_field clicked');
+    })
 
-//15-3 address1
-$('input#address1').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp address 1';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
+    //15-3 address1
+    $('input#address1').on('blur',function(){
+        s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
+        s.eVar30='send info kit to doctor';
+        s.eVar34='field name_hcp address 1';
+        s.events=s.linkTrackEvents="event3";
+        s.tl(this,'o','send info kit to doctor'+'_field clicked');
+    })
 
-//15-4 address2
-$('input#address2').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp address 2';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
+    //15-4 address2
+    $('input#address2').on('blur',function(){
+        s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
+        s.eVar30='send info kit to doctor';
+        s.eVar34='field name_hcp address 2';
+        s.events=s.linkTrackEvents="event3";
+        s.tl(this,'o','send info kit to doctor'+'_field clicked');
+    })
 
-//15-5 city
-$('input#city').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp city';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
+    //15-5 city
+    $('input#city').on('blur',function(){
+        s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
+        s.eVar30='send info kit to doctor';
+        s.eVar34='field name_hcp city';
+        s.events=s.linkTrackEvents="event3";
+        s.tl(this,'o','send info kit to doctor'+'_field clicked');
+    })
 
-//15-6 state
-$('select#state').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp state';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
+    //15-6 state
+    $('select#state').on('blur',function(){
+        s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
+        s.eVar30='send info kit to doctor';
+        s.eVar34='field name_hcp state';
+        s.events=s.linkTrackEvents="event3";
+        s.tl(this,'o','send info kit to doctor'+'_field clicked');
+    })
 
-//15-7 zip
-$('input#zip').on('blur',function(){
-    s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
-    s.eVar30='send info kit to doctor';
-    s.eVar34='field name_hcp zip';
-    s.events=s.linkTrackEvents="event3";
-    s.tl(this,'o','send info kit to doctor'+'_field clicked');
-})
+    //15-7 zip
+    $('input#zip').on('blur',function(){
+        s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
+        s.eVar30='send info kit to doctor';
+        s.eVar34='field name_hcp zip';
+        s.events=s.linkTrackEvents="event3";
+        s.tl(this,'o','send info kit to doctor'+'_field clicked');
+    })
 
-//15-8 form complete
-$('a#submit-button').one('click',function(){
+    //15-8 submit clicked
+    $('a#submit-button').on('click',function(){
+        s.linkTrackVars='eVar30,eVar34,events'+','+scLinkCustVars;
+        s.eVar30='send info kit to doctor';
+        s.events=s.linkTrackEvents="event3";
+        s.eVar34='field name_submit';
+        s.tl(this,'o','send info kit to doctor'+'_submit clicked');
+    })
+})
+function scCompFunc(){
     s.linkTrackVars='eVar30,events'+','+scLinkCustVars;
     s.eVar30='send info kit to doctor';
     s.events=s.linkTrackEvents="event2";
-    s.tl(this,'o','send info kit to doctor'+'_complete');
-})
+    s.tl(this,'o','send info kit to doctor'+'_submit clicked');
+}
+$('div#thank-you[style*="block"]').waitUntilExists(scCompFunc);
 
 //Video Handler Functions 16
 function mediaPlayHandler(val1){
@@ -516,7 +556,6 @@ function mediaPlayHandler(val1){
 
 function mediaMilestoneHandler(val1,val4){
     var vidEvent=""
-    console.log(val1);
     if(val4==25)vidEvent='event34';
     else if(val4==50)vidEvent='event35';
     else if(val4==75)vidEvent='event36';
@@ -530,7 +569,6 @@ function mediaMilestoneHandler(val1,val4){
 }
 
 function mediaCompleteHandler(val1){
-    console.log(val1);
     s.linkTrackVars='eVar23,prop23'+','+scLinkCustVars;
     s.linkTrackEvents=s.events='event37';
     var val3=val1.replace(' > ','_').toLowerCase();
@@ -591,12 +629,12 @@ $('a#share-their-experiences').on('click',function(){
     s.prop14=s.eVar46="D=pageName";
     s.prop41=s.eVar47="D=g";
 
-function shareSendSave() { 
+function shareSendSave() {
         //s.eVar5=eventObj.provider; 
         //s.linkTrackVars="eVar5,events"; 
         //s.linkTrackEvents=s.events="event39"; 
         //s.tl(this,'o', s.eVar5 + " login"); 
-} 
+}
 
 /**********SiteCatalyst Utility Plugins Compatible with both H27.4 and App Measurement 1.4  -begin *****/
 
@@ -674,6 +712,7 @@ function getLifetimePageViews() {
     setCookie('sc_hcp_pgVwLftm', pagesLifetime, 1825, 0);
     return pagesLifetime;
 }
+
 
 /**********SiteCatalyst Utility Plugins Compatible with both H27.4 and App Measurement 1.4  -end *****/
 
