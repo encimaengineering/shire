@@ -1,6 +1,7 @@
 // App Measurement 1.4 basic code reqs
 // this file must contain a defined s_account for app meas code to run as well.
 // Must contain s = new AppMeasurement();
+// Shir-612 vyvansepro.com adhd and bed
 // Include s.account=s_account in the Additional Configuration box within the SiteCatalyst Pageload Tag Attributes
 s = new AppMeasurement();
 
@@ -14,7 +15,7 @@ s.trackDownloadLinks=false
 s.trackExternalLinks=false
 s.trackInlineStats=true
 s.linkDownloadFileTypes="exe,zip,wav,mp3,mov,mpg,avi,wmv,doc,pdf,xls"
-s.linkInternalFilters="javascript:,stg45.assure-programs.com"
+s.linkInternalFilters="javascript:,vyvansepro.com"
 s.linkLeaveQueryString=false
 s.linkTrackVars="None"
 s.linkTrackEvents="None"
@@ -27,6 +28,14 @@ s.cookiePath="/";
 
 s.usePlugins=true
 function s_doPlugins(s) {
+    
+        //Referring URL
+    s.fRef=document.referrer.toLowerCase();
+    s.fRef=s.fRef.replace('http://','').replace('www.','').replace('https://','').replace(/\?.+/, '').replace(/^\/|\/$/g, '');
+    //Filtered URL for match
+    s.scFiltersUrl = document.domain + "/" + location.pathname.split('/')[1] + "/";
+    s.scFiltersUrl=s.scFiltersUrl.replace('www.','').toLowerCase();
+    
 /* Add calls to plugins here */
 var scURL=document.location.pathname;
 var sc_URL=document.location.pathname.toLowerCase();
@@ -90,6 +99,7 @@ if(scURL=="/binge-eating-disorder/"){s.pageName="bed|home page";}
 if(scURL=="/adhd/"){s.pageName="adhd|home page";}
 if(s.pageName=='savings'){s.pageName='savings offer';}
 if(s.pageName.indexOf('binge eating disorder|')>-1){s.pageName=s.pageName.replace('binge eating disorder','bed');}
+if(s.pageName=='binge eating disorder'){s.pageName=s.pageName="bed|home page";}
 
     /** Visitor identification variables begin **/
     s.eVar1= s.c_r('s_vi') ? s.c_r('s_vi').match(/\|([^[]+)/) ? s.c_r('s_vi').match(/\|([^[]+)/)[1] : "Unexpected Format" : "D=vidn";
@@ -166,12 +176,181 @@ if(s.pageName.indexOf('binge eating disorder|')>-1){s.pageName=s.pageName.replac
             localStorage.removeItem('scFormStart');
         }
         else if(localStorage['scFormStart']=='savings offer'){
-            s.eVar30='vyvpro resource registration';
+            s.eVar30='savings offer';
             s.events='event2';
             s.prop30="D=v30";
             localStorage.removeItem('scFormStart');
         }
     }
+
+
+    /* start - channel manager */
+
+    //TODO: Build internal referrer logic
+
+    /*
+        s.channelManager(a,b,c,d,e,f,g)
+        a = Campaign/Channel Identifiers.
+        b = deprecated
+        c = (s_cm) The cookie name that is used to enable the getValOnce check
+        d = ('') Uncompress search engine list.
+        e = (s_cmtb) Typed/Bookmarked cookie name
+        f = (30) Typed/Bookmarked non-override duration (in days)
+        g = (optional) Exclude internal tracking codes. When set to '1', campaign tracking codes are ignored if the referrer is flagged as internal.
+
+        eVar4: Channel Manager Last Touch (CMLT) Channel, most recent (last) allocation, expires after 30 days (or the campaign variable equivalent)
+        eVar72: CMLT Details, most recent (last) allocation, expires after 30 days (or the campaign variable equivalent)
+        eVar73: Channel Manager First Touch Channel, original (first) allocation, expires after 30 days. Set in Adobe Analytics as first value.
+        eVar74: CMFT Details, original (first) allocation, expires after 30 days. Set in Adobe Analytics as first value.
+    */
+
+    s.channelManager('utm_medium,utm_source,utm_campaign,utm_content,utm_term,utm_creative','','s_cm','','s_cmtb','30');
+
+    if(s._channel){
+        //set to lowercase
+        s._campaignID = s._campaignID.toLowerCase(); //campaign code found in the URL parameter passed into channelManager
+        s._channel = s._channel.toLowerCase(); //name of the determined channel
+        s._keywords = s._keywords.toLowerCase(); //search engine keywords
+        s._partner = s._partner.toLowerCase(); //search engine title. Configured in s.seList and s._extraSearchEngines
+        s._referrer - s._referrer.toLowerCase(); //referring URL
+        s._referringDomain = s._referringDomain.toLowerCase(); //referring URL's domain
+        s.pageName = s.pageName.toLowerCase();
+        //trim down the email referring domains
+        s.mailRef=s._referringDomain.indexOf('.mail.')
+        if(s.mailRef>-1)
+            s._referringDomain=s._referringDomain.substring(s.mailRef+1);
+        //Array of marketing channel query string parameters. Array keys are eVar numbers.
+        var campaignParams = [];
+        campaignParams[4] = s.Util.getQueryParam('utm_medium').toLowerCase();
+        campaignParams[25] = s.Util.getQueryParam('utm_source').toLowerCase();
+        campaignParams[26] = s.Util.getQueryParam('utm_campaign').toLowerCase();
+        campaignParams[27] = s.Util.getQueryParam('utm_content').toLowerCase();
+        campaignParams[28] = s.Util.getQueryParam('utm_term').toLowerCase();
+        campaignParams[29] = s.Util.getQueryParam('utm_creative').toLowerCase();
+        //Populate marketing channel eVars and build campaign variable
+        s.campaign = "";
+        for (var key in campaignParams) {
+            if (campaignParams.hasOwnProperty(key)) {
+              if (!!campaignParams[key]) {
+                s['eVar'+key] = campaignParams[key];
+                s.campaign += campaignParams[key]+"|";
+              } else if (!!campaignParams[4] || !!campaignParams[25] || !!campaignParams[26] || !!campaignParams[27] || !!campaignParams[28] || !!campaignParams[29]) {
+                s['eVar'+key] = "undefined";
+                s.campaign += "undefined|";
+              } else {
+                s.campaign += "undefined|";
+              }
+            }
+        }
+        //Cut off trailing "|"
+        s.campaign = s.campaign.substring(0, s.campaign.length - 1);
+        // Default values for all channels
+        //********
+        //legacy code
+        s.eVar7 = s.eVar8 = s.eVar42 = s.eVar44 = "other channel";
+        //set CMFT Channel to eVar4. eVar73 is set in Adobe Analytics as first value.
+        s.eVar73 = s.eVar4;
+        //Set the channel detail variables
+        switch(s._channel){
+            case 'unknown paid channel':
+                //override s._channel default of "Unkown Paid Channel" with utm_medium if present
+                //********
+                //legacy code sets the else value to s.campaign
+                s.eVar4 = s._channel = !!s.eVar4 ? s.eVar4 : s.campaign;
+                break;
+            case 'paid search':
+                //override s._channel value with utm_medium if present
+                s.eVar4 = s._channel = !!s.eVar4 ? s.eVar4 : s.campaign;
+                //paid search keyword
+                s.eVar7 = s.eVar28 = !!s.eVar28 ? s.eVar28 : s._keywords; //set eVar7 to s._keywords if there is no utm_term
+                //search engine
+                s.eVar44 = s.eVar25 = !!s.eVar25 ? s.eVar25 : s._partner; //set eVar44 to s._partner if there is no utm_source
+                //set marketing channel first and last touch details
+                s.eVar72 = s.eVar74 = s.eVar4 + '|' + s.eVar44 + '|' + s.eVar7;
+                break;
+            case 'natural search':
+                //tracking code
+                s.campaign = 'seo|' + s._partner;
+                //marketing channel
+                s.eVar4 = s.eVar73 = s._channel = "seo"; //set CMLT & CMFT Channel
+                //********
+                //legacy code set utm_parameters, excluding utm_term, to utm_medium
+                s.eVar25 = s.eVar26 = s.eVar27 = s.eVar29 = "D=v4";
+                //seo keyword
+                //********
+                //legacy code set utm_term to s._keyword
+                s.eVar8 = s.eVar28 = s._keywords;
+                //search engine
+                s.eVar44 = s._partner;
+                //set channel marketing details
+                s.eVar72 = s.eVar74 = 'seo|' + s._partner + '|' + s._keywords; //set CMLT & CMFT Details
+                break;
+            case 'other natural referrers':
+                //tracking code
+                s.campaign = 'referrer|' + s._referringDomain;
+                //marketing channel first and last touch
+                s.eVar4 = s.eVar73 = s._channel = 'referrer';
+                //********
+                //legacy code set all utm eVars to utm_medium)
+                s.eVar25 = s.eVar26 = s.eVar27 = s.eVar28 = s.eVar29 = "D=v4";
+                //referrers (30 days) non-search natural referrers
+                s.eVar42 = s._referringDomain;
+                //set channel marketing details (first and last touch)
+                s.eVar72=s.eVar74='referrer|'+s._referringDomain;
+                break;
+            case 'typed/bookmarked':
+                //tracking code
+                s.campaign = s.eVar4 = s.eVar73 = s._channel = 'direct'; //set CMLT & CMFT Channel
+                //set channel marketing details
+                s.eVar72 = s.eVar74 = 'direct|' + s.pageName; //set CMLT & CMFT Details
+                //********
+                //legacy code set all utm eVars to utm_medium)
+                s.eVar25 = s.eVar26 = s.eVar27 = s.eVar28 = s.eVar29 = "D=v4";
+                break;
+            default:
+                s.eVar4 = s.eVar73 = s._channel;
+                //set marketing channel details to concatenated utm_parameter values (s._campaignID)
+                s.eVar72 = !!s._campaignID ? s._channel + '|' + s._campaignID : s._channel + '|' + s._referringDomain;
+                s.eVar74 = s.eVar72;
+        }
+    }
+    /* end - channel manager */
+
+    // FICO Tracking Codes
+    s.eVar18        = s.Util.getQueryParam('tc');
+    s.eVar6         = s.Util.getQueryParam('mid');   // Shire-only
+        //Traffic Source Entry Page
+    if (!!s.eVar4){
+        s.prop5 = s.eVar4 + " : " + s.pageName; // Traffic Source Entry Page
+        // Set Marketing Channel Entry URL eVar and pageName
+        s.eVar9     = "D=pageName";
+        s.eVar48    = "D=g";
+    }
+    else {
+        s.prop5    = s.pageName; // Traffic Source Entry Page gets all page names for pathing purposes
+    }
+    //Get Previous Page Name
+    s.prop4=s.getPreviousValue(!!s.pageName ? s.pageName : !!s.pageType ? s.channel+" > Error Page" : '', 's_gpv_pn', '');
+
+    if(s.prop3)s.prop3=s.prop3.replace(/-/g, " ");
+    if(s.pageName.indexOf('?')>-1){
+        s.pageName=s.pageName.replace(/\?.+/, '');
+        }
+    if(s.pageName){
+        s.pageName=s.pageName.replace('#', '');
+    }
+    /*Percent Page Viewed*/
+    if(s.prop4){s.prop44=s.getPercentPageViewed();}
+    //Internal Filters and Referrals
+    s.scInternal=".hablemosadhd.com,.ulcerative-colitis-central.com,.everydayhealth.com/ownyouradhd,.adhdproductresourcecenter.com,.youtube.com/user/ownyouradhd,.digitashealth.com,.activatepharmacycard.com,.shireadhdscholarship.com,.vyvansesavingscard.com,.intuniv.com,.facebook.com/adhdhub,.adhdactionguide.com,.fosrenolontrack.com,.lialdaucsupport.com,.adhdandyou.com/hcp,.adhduniversity.com,.justaskaboutuc.com,.vyvansesavings.com,.shireprograms.com,.ownitproject.com,.vyvanseadult.com,.vyvanseteens.com,.adhdroadmap.com,.vyvansekids.com,.udotherest.com,.vyvansepro.com,.lialda.com,.lialdapro.com,.pentasaus.com,.ucopinion.com,.intuniv.com,.fosrenol.com,.vyvanse.com,.shire.com,.shireregistration.com,.theydotherest.com,.keepmomming.com,.vyvanse.com,.bingeeatingdisorder.com";
+    if(s.fRef.length >0){
+        if(s.fRef!=s.scFiltersUrl && s.scInternal.indexOf(s.fRef)>-1){
+            s.eVar4='internal referrer';
+            s.campaign='internalreferrer|'+s.fRef;
+        }
+    }
+
+
  }
 s.doPlugins=s_doPlugins
 var scURL=document.location.pathname;
@@ -249,22 +428,63 @@ if(s.pageName=='savings'){s.pageName='franchise|savings offer';}
 scLinkCustVars="prop1,prop2,prop4,prop5,prop6,prop7,prop8,prop9,prop10,prop11,prop12,prop14,prop24,prop41,eVar45,eVar46,eVar47";
 
 //7-1 to 7-5
-$('section.top_row li').on('mousedown',function(){
+$('section.top_row li').on('click',function(){
     var scVal=$(this).find('a').attr('id');
     if(typeof scVal!=="undefined"){
-        if(scVal.indexOf('EvokeHyperLink2')>-1){scFVal='nav_view adhd callout_global header';}
-        else if(scVal.indexOf('EvokeHyperLink3')>-1){scFVal='nav_view bed callout_global header';}
-        else if(scVal.indexOf('EvokeHyperLink4')>-1){scFVal='download_prescribing info';}
-        else if(scVal.indexOf('EvokeHyperLink1')>-1){scFVal='download_medication guide';}
+        if(scVal.indexOf('EvokeHyperLink2')>-1){
+            scFVal='nav_view adhd callout_global header'
+            s.eVar22=scFVal;
+            s.events=s.linkTrackEvents='';
+            s.linkTrackVars="eVar22"+','+scLinkCustVars;
+            s.tl(this,'o',scFVal);
+        }
+        else if(scVal.indexOf('EvokeHyperLink3')>-1){
+            scFVal='nav_view bed callout_global header';
+            s.eVar22=scFVal;
+            s.events=s.linkTrackEvents='';
+            s.linkTrackVars="eVar22"+','+scLinkCustVars;
+            s.tl(this,'o',scFVal);
+        }
+        // else if(scVal.indexOf('EvokeHyperLink4')>-1){
+        //     scFVal='download_prescribing info1';
+        //     s.eVar20=scFVal;
+        //     s.events=s.linkTrackEvents='event4';
+        //     s.linkTrackVars="eVar20,events"+','+scLinkCustVars;
+        //     s.tl(this,'d',scFVal);
+        // }
+        // else if(scVal.indexOf('EvokeHyperLink1')>-1){
+        //     scFVal='download_medication guide';
+        //     s.eVar20=scFVal;
+        //     s.events=s.linkTrackEvents='event4';
+        //     s.linkTrackVars="eVar20,events"+','+scLinkCustVars;
+        //     s.tl(this,'d',scFVal);
+        // }
     }
     else if(!scVal){
         scVal=$(this).find('a').attr('href');
-        if(scVal.indexOf('vyvanse.com')>-1){scFVal='internal site exit_vyvanse.com';}
+        if(scVal.indexOf('vyvanse.com')>-1){
+            scFVal='internal site exit_vyvanse.com';
+            s.eVar21=scFVal;
+            s.linkTrackVars="eVar21"+','+scLinkCustVars;
+            s.tl(this,'e',scFVal);
+        }
     }
-    s.eVar22=scFVal;
-    s.linkTrackVars="eVar22"+','+scLinkCustVars;
-    s.events=s.linkTrackEvents='';
-    s.tl(this,'o',s.eVar22);
+})
+//Mobile 7-1 and 7-2
+$('div.slide_menu a[href="/adhd/"],div.slide_menu a[href="/binge-eating-disorder/"]').on('click',function(){
+    var scLink=$(this).attr('href');
+    if(typeof(scLink)!='undefined'){
+        if(scLink=="/binge-eating-disorder/"){
+            scFVal='nav_view bed callout_global header'
+        }
+        else if(scLink=="/adhd/"){
+            scFVal='nav_view adhd callout_global header'
+        }
+        s.eVar22=scFVal;
+        s.events=s.linkTrackEvents='';
+        s.linkTrackVars="eVar22"+','+scLinkCustVars;
+        s.tl(this,'o',scFVal);
+   }
 })
 
 //8-1 8-2 Download Prescribing Info paragraph
@@ -283,17 +503,17 @@ $('a[href*="medguide.shirecontent"]').on('click',function(){
 })
 //8-4
 $('a[href="http://www.shire.com/shireplc/en/home"]').on('click',function(){
-    s.eVar20='internal site exit_shire us';
-    s.linkTrackVars="events,eVar20"+','+scLinkCustVars;
-    s.events=s.linkTrackEvents='event4';
-    s.tl(this,'e',s.eVar20);
+    s.eVar21='internal site exit_shire us';
+    s.linkTrackVars="events,eVar21"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'e',s.eVar21);
 })
 //8-5
 $('a[href="http://www.shirecares.com"]').on('click',function(){
-    s.eVar20='internal site exit_shire cares';
-    s.linkTrackVars="events,eVar20"+','+scLinkCustVars;
-    s.events=s.linkTrackEvents='event4';
-    s.tl(this,'e',s.eVar20);
+    s.eVar21='internal site exit_shire cares';
+    s.linkTrackVars="events,eVar21"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'e',s.eVar21);
 })
 //9-1
 $('a.hero[href="/adhd/"]').on('click',function(){
@@ -414,6 +634,22 @@ $('section#franchiseNav a').on('click',function(){
     s.events=s.linkTrackEvents='';
     s.tl(this,'o',s.eVar22);
 })
+//Mobile 10-1
+$('li.gradient a').on('click',function(){
+    var scLink=$(this).text();
+    if(typeof(scLink!='undefined')){
+            scLink=scLink.toLowerCase();
+            console.log(scLink);
+            if(scLink=="formulary coverage"){scFVal="formulary";}
+            else if(scLink=="access & affordability"){scFVal="access";}
+            else if(scLink=="vyvansepro registration"){scFVal="register";}
+            else if(scLink=="savings offer"){scFVal="savings";}
+            s.eVar22='nav_'+scFVal+' right rail call out';
+            s.linkTrackVars="eVar22"+','+scLinkCustVars;
+            s.events=s.linkTrackEvents='';
+            s.tl(this,'o',s.eVar22);
+        }
+})
 //13-5
 $('div.details a[href="/formulary-coverage/"]').on('click',function(){
     s.eVar22='nav_formulary contextual call out';
@@ -460,7 +696,7 @@ $('div.recognize-callout.diagnosed a[href="/binge-eating-disorder/about-bed/scre
 //19-5
 $('div.recognize-callout.discussion a').on('click',function(){
     s.eVar20='download_physician discussion guide pdf';
-    s.linkTrackVars="event4,eVar20"+','+scLinkCustVars;
+    s.linkTrackVars="events,eVar20"+','+scLinkCustVars;
     s.events=s.linkTrackEvents='event4';
     s.tl(this,'d',s.eVar20);
 })
@@ -488,27 +724,71 @@ $('div.description a[href*="/vyvansepro-resource/"]').on('click',function(){
     s.events=s.linkTrackEvents='';
     s.tl(this,'o',s.eVar22);
 })
+//Video Handler Functions 
+function videoPlayHandler(val1){
+    s.linkTrackVars='events,eVar23,prop23'+','+scLinkCustVars;
+    s.linkTrackEvents=s.events='event5';
+    var val2='_start';
+    var val3=val1.replace(' > ','_').toLowerCase();
+    if(val3=='video_monicaseles story')val3='video_monica seles story';
+    s.eVar23=val3;
+    s.prop23="D=v23";
+    s.tl(this,'o','video'+val2)
+}
+
+function videoMilestoneHandler(val1,val4){
+    var vidEvent=""
+    if(val4==25)vidEvent='event34';
+    else if(val4==50)vidEvent='event35';
+    else if(val4==75)vidEvent='event36';
+    s.linkTrackVars='events,eVar23,prop23'+','+scLinkCustVars;
+    s.linkTrackEvents=s.events=vidEvent;
+    var val3=val1.replace(' > ','_').toLowerCase();
+    if(val3=='video_monicaseles story')val3='video_monica seles story';
+    s.eVar23=val3;
+    s.prop23='D=v23';
+    s.tl(this,'o','video_'+val4+'% milestone reached')
+}
+
+function videoCompleteHandler(val1){
+    s.linkTrackVars='events,eVar23,prop23'+','+scLinkCustVars;
+    s.linkTrackEvents=s.events='event37';
+    //var val3=val1.replace(' > ','_').toLowerCase();
+    var val2='_complete';
+    s.eVar23=val3;
+    s.prop23="D=v23";
+    s.tl(this,'o','video'+val2)
+}
+
 //23-7
-
-
-
-
-
-// //23-8
-// $('div.recognize-callout.diagnosed.screening a').on('click',function(){
-//     s.eVar20='download_bed screener pdf';
-//     s.linkTrackVars="eVar20"+','+scLinkCustVars;
-//     s.events=s.linkTrackEvents='event4';
-//     s.tl(this,'o',s.eVar20);
-// })
-//23-9
+$('div.box div.description a.link').on('click',function(){
+    var scLink=$(this).text().toLowerCase();
+    var scLVal='';
+    var scLFVal='';
+    if(typeof(scLink)!="undefined"){
+        if(scLink=='download'){
+            scLFVal=$(this).closest('.description').find('h4').text();
+            scLVal=$(this).attr('href');
+            if(!!scLVal && !!scLFVal){
+                if(scLVal=="/documents/Adult-Binge-Eating-Disorder-Patient-Screener.pdf"){scLVal="bed screener pdf";}
+                else if(scLVal=="/documents/Discussion-Guide-for-Adult-Patients-with-Binge-Eating-Disorder.pdf"){scLVal="physician discussion guide pdf";}
+                else(scLVal=scLFVal);
+            }
+        s.linkTrackVars="eVar20,events"+','+scLinkCustVars;
+        s.linkTrackEvents=s.events='event4';
+        s.eVar20='download_'+scLVal;
+        if(s.eVar20){s.eVar20=s.eVar20.toLowerCase();}
+        s.tl(this,'d',"download_"+scLVal);
+        }
+    }
+})
 
 //24-1
 $('div.recognize-callout.diagnosed.screening a').on('click',function(){
     s.eVar20='download_bed screener pdf';
     s.linkTrackVars="eVar20"+','+scLinkCustVars;
     s.events=s.linkTrackEvents='event4';
-    s.tl(this,'o',s.eVar20);
+    s.tl(this,'d',s.eVar20);
 })
 //25-2
 if(s.pageName=="bed|bed resource center"){
@@ -678,7 +958,76 @@ if(s.pageName.indexOf('savings|thank you')>-1){
     })
 }
 //Onclick code for custom click and other events - end
+//scott start
+/** Referrer logic begin **/
+s.internalDomains = s.linkInternalFilters.split(',');
+/* Sort s.internalDomains from lengest values to shortest so addabilify.com matches before abilify.com
+All sites should redirect from non-www to www. Raise the issue with an Encima project manager if they don't.
+This takes a long time to execute so I've sorted the list and saved it into BrightTag so it doesn't have to be sorted here.
+Keeping this code here so I don't have to find it online when I want to sort a list later.
+s.internalDomains.sort(function(a, b) {
+  return b.length - a.length;
+});
+*/
+s.thisDomain                = getDomainWithoutWWWorM(location.toString());
+if (document.referrer) {
+    s.referrer              = document.referrer.toLowerCase();
+    s.referrerFullDomain    = getFullDomain(s.referrer);
+    s.referrerDomain        = getDomainWithoutWWWorM(s.referrer);
+    s.isSameDomain          = s.referrerDomain == s.thisDomain ? true : false;
+    s.refPath               = s.referrer.toLowerCase().match(/(?:.com\/)(hcp|teens|kids)(?:\b|\/)/);
+    s.refPath               = s.refPath && s.refPath.length > 1 ? s.refPath[1].toString().replace('/','') : false;
+    s.sitePath              = location.pathname.toLowerCase().match(/(hcp|teens|kids)(?:\b|\/)/);
+    s.sitePath              = s.sitePath && s.sitePath.length > 1 ? s.sitePath[1].toString().replace('/','') : false;
+    if (!s.isSameDomain || s.refPath != s.sitePath) {
+        // If the referrer is not a partner site
+        if (s.linkInternalFilters.indexOf(s.referrerDomain) == -1) {
+            // Set last-touch referrer variables
+            s.prop37 = s.referrerDomain;
+            s.eVar37 = "D=c37";
+            s.prop38 = "D=r";
+            s.eVar38 = "D=r";
+        }
+        else if (s.thisDomain != "shireregistration.com" || !s.getQueryParam('s_vi') && !s.getQueryParam('s_fid')) { // If either s_vi or s_fid is in the URL, then this site tracks as part of the calling site
+            // Referrer is a partner site. Determine which one it is and set Internal Referrer marketing channel.
+            for (var i = 0; i < s.internalDomains.length; i++) {
+                if (s.referrerFullDomain.indexOf(s.internalDomains[i]) > -1 && !!s.getValOnce(s.referrerDomain+'/'+s.refPath+"Internal Referrer", 's_cm', 1/48)) {
+                    // The getValOnce call in the if statement above updates channelManager's cookie with this new channel.
+                    // If this is the same channel the user entered through last time this code block does not execute and s._channel is empty.
+                    s.eVar3 = !!s.refPath ? s.referrerFullDomain+"/"+s.refPath : s.referrerFullDomain; // Internal site referral
+                    // Set marketing channel variables. channelManager will not run if referrer is in linkInternalReferrers.
+                    s._channel = s.eVar4 = "Internal Referrer";
+                    s.eVar25 = s.eVar26 = s.eVar27 = s.eVar28 = s.eVar29 = s.prop37 = s.eVar37 = s.prop38 = s.eVar38 = "D=v4";
+                    s.campaign = s.eVar13 = s.prop5 = "Internal Referrer: " + s.eVar3; // campaign undefined : undefined
+                    s.eVar5 = s.stackKeepFirst(s.eVar4, 's_eVar5', ' > ', '5', '1825');
+                    s.eVar7 = s.eVar8 = s.eVar42 = s.eVar44 = "Other Channel";
+                    s.eVar9 = "D=pageName";
+                    s.eVar48 = "D=g";
+                    break;
+                }
+            }
+        }
+    }
+    s.prop42 = "D=r";
+}
+/** Referrer logic end **/
 
+function getFullDomain(str) {
+    var re = new RegExp('^(?:f|ht)tp(?:s)?\://([^/]+)', 'im');
+    if (str.match(re) != null)
+        return str.match(re)[1].toString();
+    else
+        return false;
+}
+
+function getDomainWithoutWWWorM(str) {
+    var re = new RegExp('^(?:f|ht)tp(?:s)?\://(?:www.)?(?:m.)?([^/]+)', 'im');
+    if (str.match(re) != null)
+        return str.match(re)[1].toString();
+    else
+        return false;
+}
+//scott end
 /**********SiteCatalyst Utility Plugins Compatible with both H27.4 and App Measurement 1.4  -begin *****/
 
 /* p_gh Utility Function required in all implementations */
@@ -888,6 +1237,65 @@ s.getPercentPageViewed=new Function("n",""
 +"_PPVt=setTimeout(W.s_PPVevent,333)};for(var f=W.s_PPVevent,i=0;i<E."
 +"length;i++)if(EL)EL(E[i],f,false);else if(AE)AE('on'+E[i],f);f()};v"
 +"ar a=s.s_PPVg();return!n||n=='-'?a[1]:a");
+
+/* channelManager v2.85AM - Tracking External Traffic */
+s.channelManager=new Function("a","b","c","d","e","f","g",""
++"var s=this,h=new Date,i=0,j,k,l,m,n,o,p,q,r,t,u,v,w,x,y,z,A,B,C,D,E"
++",F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T;h.setTime(h.getTime()+1800000);if(e)"
++"{i=1;if(s.c_r(e))i=0;if(!s.c_w(e,1,h))s.c_w(e,1,0);if(!s.c_r(e))i=0"
++";if(f&&s.c_r('s_tbm'+f))i=0;}j=s.referrer?s.referrer:document.refer"
++"rer;j=unescape(j.toLowerCase());if(!j)k=1;else {l=j.indexOf('?')>-1"
++"?j.indexOf('?'):j.length;m=j.substring(0,l);n=s.split(j,'/');n=s.sp"
++"lit(n[2],'?');o=n[0].toLowerCase();p=s.linkInternalFilters.toLowerC"
++"ase();p=s.split(p,',');for(q=0;q<p.length;q++){r=o.indexOf(p[q])==-"
++"1?'':j;if(r)break;}}if(!r&&!k){t=j;u=v=o;w='Other Natural Referrers"
++"';x=s.seList+'>'+s._extraSearchEngines;if(d==1){m=s.replace(m,'oogl"
++"e','%');m=s.replace(m,'ahoo','^');j=s.replace(j,'as_q','*');}y=s.sp"
++"lit(x,'>');for(z=0;z<y.length;z++){A=y[z];A=s.split(A,'|');B=s.spli"
++"t(A[0],',');for(C=0;C<B.length;C++){D=m.indexOf(B[C]);if(D>-1){if(A"
++"[2])E=v=A[2];else E=o;if(d==1){E=s.replace(E,'#',' - ');j=s.replace"
++"(j,'*','as_q');E=s.replace(E,'^','ahoo');E=s.replace(E,'%','oogle')"
++";}F=s.split(A[1],',');for(G=0;G<F.length;G++){if(j.indexOf(F[G]+'='"
++")>-1||j.indexOf('https://www.google.')==0||j.indexOf('http://r.sear"
++"ch.yahoo.com')==0)H=1;I=s.Util.getQueryParam(F[G],j).toLowerCase();"
++"if(H||I)break;}}if(H||I)break;}if(H||I)break;}}if(!r||g!='1'){J=s.s"
++"plit(a,',');K=0;while(!T&&K<J.length){T=s.Util.getQueryParam(J[K],'"
++"',b);K++;}if(T){v=T;if(E)w='Paid Search';else w='Unknown Paid Chann"
++"el';}if(!T&&E&&H){v=E;w='Natural Search';}}if(i&&k&&!T)t=u=v=w='Typ"
++"ed/Bookmarked';J=s._channelDomain;if(J&&o&&!r){K=s.split(J,'>');for"
++"(L=0;L<K.length;L++){M=s.split(K[L],'|');N=s.split(M[1],',');O=N.le"
++"ngth;for(P=0;P<O;P++){Q=N[P].toLowerCase();R=o.indexOf(Q);if(R>-1){"
++"w=M[0];break;}}if(R>-1)break;}}J=s._channelParameter;if(J){K=s.spli"
++"t(J,'>');for(L=0;L<K.length;L++){M=s.split(K[L],'|');N=s.split(M[1]"
++",',');O=N.length;for(P=0;P<O;P++){R=s.Util.getQueryParam(N[P]);if(R"
++"){w=M[0];break;}}if(R)break;}}J=s._channelPattern;if(J){K=s.split(J"
++",'>');for(L=0;L<K.length;L++){M=s.split(K[L],'|');N=s.split(M[1],',"
++"');O=N.length;for(P=0;P<O;P++){Q=N[P].toLowerCase();R=T.toLowerCase"
++"();S=R.indexOf(Q);if(S==0){w=M[0];break;}}if(S==0)break;}}S=w?T+u+w"
++"+I:'';c=c?c:'c_m';if(c!='0')S=s.getValOnce(S,c,0);if(S){s._campaign"
++"ID=T?T:'n/a';s._referrer=t?t:'n/a';s._referringDomain=u?u:'n/a';s._"
++"campaign=v?v:'n/a';s._channel=w?w:'n/a';s._partner=E?E:'n/a';s._key"
++"words=H?I?I:'Keyword Unavailable':'n/a';if(f&&w!='Typed/Bookmarked'"
++"){h.setTime(h.getTime()+f*86400000);s.c_w('s_tbm'+f,1,h);}}else s._"
++"campaignID=s._referrer=s._referringDomain=s._campaign=s._channel=s."
++"_partner=s._keywords='';");
+/* Top 130 - Grouped */
+s.seList="google.,googlesyndication.com,.googleadservices.com|q,as_q|"
++"Google>bing.com|q|Bing>yahoo.com,yahoo.co.jp|p,va|Yahoo!>ask.jp,ask"
++".co|q,ask|Ask>.aol.,suche.aolsvc.de|q,query|AOL>altavista.co,altavi"
++"sta.de|q,r|AltaVista>.mywebsearch.com|searchfor|MyWebSearch>webcraw"
++"ler.com|q|WebCrawler>wow.com|q|Wow>infospace.com|q|InfoSpace>blekko"
++".com|q|Blekko>dogpile.com|q|DogPile>alhea.com|q|Alhea>goduckgo.com|"
++"q|GoDuckGo>info.com|qkw|Info.com>contenko.com|q|Contenko>www.baidu."
++"com|wd|Baidu>daum.net,search.daum.net|q|Daum>icqit.com|q|icq>myway."
++"com|searchfor|MyWay.com>naver.com,search.naver.com|query|Naver>nets"
++"cape.com|query,search|Netscape Search>reference.com|q|Reference.com"
++">seznam|w|Seznam.cz>abcsok.no|q|Startsiden>tiscali.it,www.tiscali.c"
++"o.uk|key,query|Tiscali>virgilio.it|qs|Virgilio>yandex|text|Yandex.r"
++"u>optimum.net|q|Optimum Search";
+
+
+
 
 /********** SiteCat Plugins for specific sites -begin ***********/
 
