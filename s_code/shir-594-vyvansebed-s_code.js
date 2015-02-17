@@ -2,7 +2,7 @@
 // this file must contain a defined s_account for app meas code to run as well.
 // Must contain s = new AppMeasurement();
 // Include s.account=s_account in the Additional Configuration box within the SiteCatalyst Pageload Tag Attributes
-// lib|vyvanse.com/bed|shir-594|prod tester222
+// lib|vyvanse.com/bed|shir-594|prod new code
 s = new AppMeasurement();
 
 /************************** CONFIG SECTION **************************/
