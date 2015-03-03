@@ -266,8 +266,8 @@ s.doPlugins=s_doPlugins
 //Onclick code for custom click and other events - begin
 scLinkCustVars="prop1,prop2,prop4,prop5,prop6,prop7,prop8,prop9,prop10,prop11,prop12,prop24,prop41,eVar45,eVar46,eVar47";
 
-//6-1
-$('li a[href*="pi.shirecontent"]').live('click',function(){
+//6-1, 6-8
+$('a[href*="pi.shirecontent"]').live('click',function(){
     s.linkTrackVars='eVar20,events'+','+scLinkCustVars;
     s.eVar20='download_pi guide';
     s.events=s.linkTrackEvents='event4';
@@ -285,22 +285,49 @@ $('a#divMainEmailToFriend2').live('click',function(){
     s.linkTrackVars='eVar22'+','+scLinkCustVars;
     s.eVar22='nav|email a friend call out|header';
     s.events=s.linkTrackEvents='';
-    s.tl(this,'c', s.eVar22);
+    s.tl(this,'o', s.eVar22);
 })
 //6-4
 $('div.slide-cta a[href="/support-program.aspx"]').live('click',function(){
     s.linkTrackVars='eVar22'+','+scLinkCustVars;
-    s.eVar22=' nav_sign up for savings card_homepage brandbox';
+    s.eVar22='nav_sign up for savings card_homepage brandbox';
     s.events=s.linkTrackEvents='';
-    s.tl(this,'c', s.eVar22);
+    console.log('test1');
+    s.tl(this,'o', s.eVar22);
 })
 //6-5, 6-6, 6-7
-$('div.slide-cta a[href="/support-program.aspx"]').live('click',function(){
+$('div.hp-co a').live('click',function(){
+    var scLink=$(this).attr('href');
+    if(scLink=="/what-is-lialda.aspx"){s.eVar22="nav_understand lialda right for you call out_home page";}
+    else if(scLink=="/uc-resources.aspx"){s.eVar22="nav_resources to manage uc call out_home page";}
+    else if(scLink=="/support-program.aspx"){s.eVar22="nav_learn patient support program call out_home page ";}
     s.linkTrackVars='eVar22'+','+scLinkCustVars;
-    s.eVar22=' nav_sign up for savings card_homepage brandbox';
     s.events=s.linkTrackEvents='';
-    s.tl(this,'c', s.eVar22);
+    console.log('test2');
+    s.tl(this,'o', s.eVar22);
 })
+//6-9
+$('a#ok_btn').live('click',function(){
+    var scLinkUrl=$(this).attr('href');
+    if(scLinkUrl.indexOf('fda.gov')>-1){
+        s.eVar21='external exit_fda.gov';
+        s.linkTrackVars='eVar21'+','+scLinkCustVars;
+        s.events=s.linkTrackEvents="";
+        s.tl(this,'e', s.eVar21); 
+    }
+})
+//6-10
+$('a.shire[href="http://www.shire.com"]').live('click',function(){
+        s.eVar21='internal exit_shire us';
+        s.linkTrackVars='eVar21'+','+scLinkCustVars;
+        s.events=s.linkTrackEvents="";
+        s.tl(this,'e', s.eVar21); 
+})
+
+
+
+
+
 //RegistrationForm
 //sample function call -dcupdate
 // $('li.first').on('click',function(){
