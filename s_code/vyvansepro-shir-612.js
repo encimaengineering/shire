@@ -17,8 +17,8 @@ s.trackInlineStats=true
 s.linkDownloadFileTypes="exe,zip,wav,mp3,mov,mpg,avi,wmv,doc,pdf,xls"
 s.linkInternalFilters="javascript:,vyvansepro.com"
 s.linkLeaveQueryString=false
-s.linkTrackVars="None"
-s.linkTrackEvents="None"
+s.linkTrackVars=""
+s.linkTrackEvents="";
 /* GetActionDepth */
 //s.ActionDepthTest=true;
 s.cookieDomain=document.location.hostname;
@@ -35,7 +35,8 @@ function s_doPlugins(s) {
     //Filtered URL for match
     s.scFiltersUrl = document.domain + "/" + location.pathname.split('/')[1] + "/";
     s.scFiltersUrl=s.scFiltersUrl.replace('www.','').toLowerCase();
-    
+    s.scFiltersDomain= document.domain.replace('www.','');
+    s.scRefTrim=document.referrer.toLowerCase().replace(/(\/\/[^\/]+)?\/.*/, '$1').replace('http://','').replace('www.','').replace('https://','').replace(/\?.+/, '').replace(/^\/|\/$/g, '');
 /* Add calls to plugins here */
 var scURL=document.location.pathname;
 var sc_URL=document.location.pathname.toLowerCase();
@@ -97,6 +98,7 @@ if(s.pageName){s.pageName=s.pageName.replace(/-/g,' ').toLowerCase();}
 if(s.channel){s.channel=s.channel.replace(/-/g,' ').toLowerCase();}
 if(scURL=="/binge-eating-disorder/"){s.pageName="bed|home page";}
 if(scURL=="/adhd/"){s.pageName="adhd|home page";}
+if(sc_URL=='/adhd/default.aspx'){s.pageName='adhd|home page';}
 if(s.pageName=='savings'){s.pageName='savings offer';}
 if(s.pageName.indexOf('binge eating disorder|')>-1){s.pageName=s.pageName.replace('binge eating disorder','bed');}
 if(s.pageName=='binge eating disorder'){s.pageName=s.pageName="bed|home page";}
@@ -139,26 +141,6 @@ if(s.pageName=='binge eating disorder'){s.pageName=s.pageName="bed|home page";}
     s.hbx_lt = "auto"
     s.setupLinkTrack(",,prop51,prop52", "SC_LINKS");
 
-   //Internal Search
-    if(scURL.indexOf("/searchResults.html")>-1){
-        if (!s.prop16) {s.prop16=s.Util.getQueryParam("q");}
-        if(s.prop16){s.eVar16="D=c16";
-            if(document.getElementById('tipue_search_results_count')){
-            var sc_success = document.getElementById('tipue_search_results_count')
-            textContent = sc_success.textContent;
-            s.prop19 = sc_success.textContent;
-            s.eVar19="D=c19"
-            if(s.prop19){s.events="event27";}
-            }
-            if(document.getElementById('tipue_search_warning_head')){
-                var sc_success = document.getElementById('tipue_search_warning_head')
-                textContent = sc_success.textContent;
-                s.prop19 = sc_success.textContent;
-                s.eVar19="D=c19"
-                if(s.prop19){s.events="event28";}
-            }
-        }
-    }
 
 
 
@@ -168,7 +150,7 @@ if(s.pageName=='binge eating disorder'){s.pageName=s.pageName="bed|home page";}
 
 
     //29 Form Complete
-    if(s.pageName.indexOf('savings|thank you')>-1 || s.pageName.indexOf('vyvansepro resource|thank you')>-1 ){
+    if(s.pageName.indexOf('savings|thank you')>-1 || s.pageName.indexOf('vyvansepro resource|thank you')>-1 || s.pageName.indexOf('unsubscribe|confirmation')>-1){
         if(localStorage['scFormStart']=='vyvpro resource registration'){
             s.eVar30='vyvpro resource registration';
             s.events='event2';
@@ -177,6 +159,12 @@ if(s.pageName=='binge eating disorder'){s.pageName=s.pageName="bed|home page";}
         }
         else if(localStorage['scFormStart']=='savings offer'){
             s.eVar30='savings offer';
+            s.events='event2';
+            s.prop30="D=v30";
+            localStorage.removeItem('scFormStart');
+        }
+        else if(localStorage['scFormStart']=='unsubscribe'){
+            s.eVar30='unsubscribe';
             s.events='event2';
             s.prop30="D=v30";
             localStorage.removeItem('scFormStart');
@@ -342,15 +330,26 @@ if(s.pageName=='binge eating disorder'){s.pageName=s.pageName="bed|home page";}
     /*Percent Page Viewed*/
     if(s.prop4){s.prop44=s.getPercentPageViewed();}
     //Internal Filters and Referrals
-    s.scInternal=".hablemosadhd.com,.ulcerative-colitis-central.com,.everydayhealth.com/ownyouradhd,.adhdproductresourcecenter.com,.youtube.com/user/ownyouradhd,.digitashealth.com,.activatepharmacycard.com,.shireadhdscholarship.com,.vyvansesavingscard.com,.intuniv.com,.facebook.com/adhdhub,.adhdactionguide.com,.fosrenolontrack.com,.lialdaucsupport.com,.adhdandyou.com/hcp,.adhduniversity.com,.justaskaboutuc.com,.vyvansesavings.com,.shireprograms.com,.ownitproject.com,.vyvanseadult.com,.vyvanseteens.com,.adhdroadmap.com,.vyvansekids.com,.udotherest.com,.vyvansepro.com,.lialda.com,.lialdapro.com,.pentasaus.com,.ucopinion.com,.intuniv.com,.fosrenol.com,.vyvanse.com,.shire.com,.shireregistration.com,.theydotherest.com,.keepmomming.com,.vyvanse.com,.bingeeatingdisorder.com";
-    if(s.fRef.length >0){
-        if(s.fRef!=s.scFiltersUrl && s.scInternal.indexOf(s.fRef)>-1){
-            s.eVar4='internal referrer';
-            s.campaign='internalreferrer|'+s.fRef;
+    s.scInternal=".hablemosadhd.com,.ulcerative-colitis-central.com,.everydayhealth.com/ownyouradhd,.adhdproductresourcecenter.com,.youtube.com/user/ownyouradhd,.digitashealth.com,.activatepharmacycard.com,.shireadhdscholarship.com,.vyvansesavingscard.com,.intuniv.com,.facebook.com/adhdhub,.adhdactionguide.com,.fosrenolontrack.com,.lialdaucsupport.com,.adhdandyou.com/hcp,.adhduniversity.com,.justaskaboutuc.com,.vyvansesavings.com,.shireprograms.com,.ownitproject.com,.vyvanseadult.com,.vyvanseteens.com,.adhdroadmap.com,.vyvansekids.com,.udotherest.com,.lialda.com,.lialdapro.com,.pentasaus.com,.ucopinion.com,.intuniv.com,.fosrenol.com,.vyvanse.com,.shire.com,.shireregistration.com,.theydotherest.com,.keepmomming.com,.vyvanse.com,.bingeeatingdisorder.com";
+    //if(s.fRef.length >0){
+    if(typeof(s.scRefTrim)!='undefined' && s.scRefTrim.length>0){
+        if(s.scRefTrim!=s.scFiltersDomain && s.scInternal.indexOf(s.scRefTrim)>-1){
+            //console.log(s.scInternal);
+            s.eVar4=s.eVar73=s.channel='internal referrer';
+            s.campaign='internalreferrer|'+s.scRefTrim;
+            //s.campaign = s.campaign.substring(0, s.campaign.length - 1);
+            s.eVar72=s.eVar74='internalreferrer|'+s.scRefTrim;
+            s.prop42=s.eVar42="D=r";
+        }
+        else if(s.scRefTrim!=s.scFiltersDomain && s.scInternal.indexOf(s.scRefTrim)==-1){
+            s.prop42=s.eVar42="D=r";
         }
     }
-
-
+    var lastChar = s.pageName.substr(-1);
+    if(lastChar=='|'){
+        s.pageName=s.pageName.substring(0, s.pageName.length - 1);
+    }
+    if(s.pageName)s.pageName=s.pageName.replace(/%2d/g, "");
  }
 s.doPlugins=s_doPlugins
 var scURL=document.location.pathname;
@@ -466,6 +465,7 @@ $('section.top_row li').on('click',function(){
             scFVal='internal site exit_vyvanse.com';
             s.eVar21=scFVal;
             s.linkTrackVars="eVar21"+','+scLinkCustVars;
+            s.events=s.linkTrackEvents='';
             s.tl(this,'e',scFVal);
         }
     }
@@ -530,24 +530,26 @@ $('a.hero.last[href="/binge-eating-disorder/"]').on('click',function(){
     s.tl(this,'o',s.eVar22);
 })
 //9-3
-$('select#ddlState').one('click',function(){
-    s.eVar22='nav_formulary tool interaction';
-    s.linkTrackVars="events,eVar22,prop30,eVar30"+','+scLinkCustVars;
-    s.events=s.linkTrackEvents='event39';
-    s.prop30='formulary coverage';
-    s.eVar30='D=c30';
-    s.tl(this,'o',s.prop30+"_touched");
-    $('select#ddlState').on('click',function(){
-        s.linkTrackVars="eVar22"+','+scLinkCustVars;
-        s.eVar22='nav_formulary tool interaction';
-        s.tl(this,'o',s.eVar22);
-    })
-})
+// $('select#ddlState').one('click',function(){
+//     s.eVar22='nav_formulary tool interaction';
+//     s.linkTrackVars="events,eVar22,prop30,eVar30"+','+scLinkCustVars;
+//     s.events=s.linkTrackEvents='event39';
+//     s.prop30='formulary coverage';
+//     s.eVar30='D=c30';
+//     s.tl(this,'o',s.prop30+"_touched");
+//     $('select#ddlState').on('click',function(){
+//         s.linkTrackVars="eVar22"+','+scLinkCustVars;
+//         s.events=s.linkTrackEvents='';
+//         s.eVar22='nav_formulary tool interaction';
+//         s.tl(this,'o',s.eVar22);
+//     })
+// })
 //9-4
 //9-5
+if(!!localStorage['forTool']){
+    localStorage.removeItem('forTool');
+}
 $('select#ddlState').on('blur',function(){
-    //var e = document.getElementById("ddlState");
-    //var strUser = e.options[e.selectedIndex].value;
     s.events=s.linkTrackEvents='event3';
     if(!localStorage['forTool']){
         s.events=s.linkTrackEvents='event3,event39';
@@ -864,10 +866,16 @@ $('input[type="text"]').on('blur',function(){
     else if(s.pageName.indexOf('savings offer')>-1){
         s.eVar30='savings offer';
     }
+    else if(s.pageName.indexOf('unsubscribe')>-1){
+        s.eVar30='unsubscribe';
+    }
     var scFVal=$(this).attr('placeholder');
     if(typeof(scFVal)=="undefined"){
         var scFFVal=$(this).attr('id');
+        console.log(scFFVal);
         if(scFFVal.indexOf('tbEmail')>-1){var scFinal='email';}
+        else if(scFFVal.indexOf('tbFirstName')>-1){var scFinal='first name';}
+        else if(scFFVal.indexOf('tbLastName')>-1){var scFinal='last name';}
         else if(scFFVal.indexOf('ConfirmEmail')>-1){var scFinal='reenter email';}
         else if(scFFVal.indexOf('tbAddress1')>-1){var scFinal='address1';}
         else if(scFFVal.indexOf('tbAddress2')>-1){var scFinal='suite';}
@@ -947,6 +955,15 @@ $('div.submit').on('click',function(){
     localStorage['scFormStart']=s.eVar30;
     s.tl(this,'o',s.eVar30+'_'+s.eVar34);
 })
+//Unsubscribe Form Start
+$('div#unsubForm').one('click',function(){
+    s.eVar30='unsubscribe';
+    s.prop30="D=v30";
+    s.linkTrackVars="events,pageName,eVar30,prop30"+','+scLinkCustVars;
+    s.events=s.linkTrackEvents='event39';
+    s.tl(this,'o',s.eVar30+'_started');
+})
+
 //29 form complete in do plugins so event2 will set
 //30-5
 if(s.pageName.indexOf('savings|thank you')>-1){
@@ -969,47 +986,47 @@ s.internalDomains.sort(function(a, b) {
   return b.length - a.length;
 });
 */
-s.thisDomain                = getDomainWithoutWWWorM(location.toString());
-if (document.referrer) {
-    s.referrer              = document.referrer.toLowerCase();
-    s.referrerFullDomain    = getFullDomain(s.referrer);
-    s.referrerDomain        = getDomainWithoutWWWorM(s.referrer);
-    s.isSameDomain          = s.referrerDomain == s.thisDomain ? true : false;
-    s.refPath               = s.referrer.toLowerCase().match(/(?:.com\/)(hcp|teens|kids)(?:\b|\/)/);
-    s.refPath               = s.refPath && s.refPath.length > 1 ? s.refPath[1].toString().replace('/','') : false;
-    s.sitePath              = location.pathname.toLowerCase().match(/(hcp|teens|kids)(?:\b|\/)/);
-    s.sitePath              = s.sitePath && s.sitePath.length > 1 ? s.sitePath[1].toString().replace('/','') : false;
-    if (!s.isSameDomain || s.refPath != s.sitePath) {
-        // If the referrer is not a partner site
-        if (s.linkInternalFilters.indexOf(s.referrerDomain) == -1) {
-            // Set last-touch referrer variables
-            s.prop37 = s.referrerDomain;
-            s.eVar37 = "D=c37";
-            s.prop38 = "D=r";
-            s.eVar38 = "D=r";
-        }
-        else if (s.thisDomain != "shireregistration.com" || !s.getQueryParam('s_vi') && !s.getQueryParam('s_fid')) { // If either s_vi or s_fid is in the URL, then this site tracks as part of the calling site
-            // Referrer is a partner site. Determine which one it is and set Internal Referrer marketing channel.
-            for (var i = 0; i < s.internalDomains.length; i++) {
-                if (s.referrerFullDomain.indexOf(s.internalDomains[i]) > -1 && !!s.getValOnce(s.referrerDomain+'/'+s.refPath+"Internal Referrer", 's_cm', 1/48)) {
-                    // The getValOnce call in the if statement above updates channelManager's cookie with this new channel.
-                    // If this is the same channel the user entered through last time this code block does not execute and s._channel is empty.
-                    s.eVar3 = !!s.refPath ? s.referrerFullDomain+"/"+s.refPath : s.referrerFullDomain; // Internal site referral
-                    // Set marketing channel variables. channelManager will not run if referrer is in linkInternalReferrers.
-                    s._channel = s.eVar4 = "Internal Referrer";
-                    s.eVar25 = s.eVar26 = s.eVar27 = s.eVar28 = s.eVar29 = s.prop37 = s.eVar37 = s.prop38 = s.eVar38 = "D=v4";
-                    s.campaign = s.eVar13 = s.prop5 = "Internal Referrer: " + s.eVar3; // campaign undefined : undefined
-                    s.eVar5 = s.stackKeepFirst(s.eVar4, 's_eVar5', ' > ', '5', '1825');
-                    s.eVar7 = s.eVar8 = s.eVar42 = s.eVar44 = "Other Channel";
-                    s.eVar9 = "D=pageName";
-                    s.eVar48 = "D=g";
-                    break;
-                }
-            }
-        }
-    }
-    s.prop42 = "D=r";
-}
+// s.thisDomain                = getDomainWithoutWWWorM(location.toString());
+// if (document.referrer) {
+//     s.referrer              = document.referrer.toLowerCase();
+//     s.referrerFullDomain    = getFullDomain(s.referrer);
+//     s.referrerDomain        = getDomainWithoutWWWorM(s.referrer);
+//     s.isSameDomain          = s.referrerDomain == s.thisDomain ? true : false;
+//     s.refPath               = s.referrer.toLowerCase().match(/(?:.com\/)(hcp|teens|kids)(?:\b|\/)/);
+//     s.refPath               = s.refPath && s.refPath.length > 1 ? s.refPath[1].toString().replace('/','') : false;
+//     s.sitePath              = location.pathname.toLowerCase().match(/(hcp|teens|kids)(?:\b|\/)/);
+//     s.sitePath              = s.sitePath && s.sitePath.length > 1 ? s.sitePath[1].toString().replace('/','') : false;
+//     if (!s.isSameDomain || s.refPath != s.sitePath) {
+//         // If the referrer is not a partner site
+//         if (s.linkInternalFilters.indexOf(s.referrerDomain) == -1) {
+//             // Set last-touch referrer variables
+//             s.prop37 = s.referrerDomain;
+//             s.eVar37 = "D=c37";
+//             s.prop38 = "D=r";
+//             s.eVar38 = "D=r";
+//         }
+//         else if (s.thisDomain != "shireregistration.com" || !s.Util.getQueryParam('s_vi') && !s.Util.getQueryParam('s_fid')) { // If either s_vi or s_fid is in the URL, then this site tracks as part of the calling site
+//             // Referrer is a partner site. Determine which one it is and set Internal Referrer marketing channel.
+//             for (var i = 0; i < s.internalDomains.length; i++) {
+//                 if (s.referrerFullDomain.indexOf(s.internalDomains[i]) > -1 && !!s.Util.getValOnce(s.referrerDomain+'/'+s.refPath+"Internal Referrer", 's_cm', 1/48)) {
+//                     // The getValOnce call in the if statement above updates channelManager's cookie with this new channel.
+//                     // If this is the same channel the user entered through last time this code block does not execute and s._channel is empty.
+//                     s.eVar3 = !!s.refPath ? s.referrerFullDomain+"/"+s.refPath : s.referrerFullDomain; // Internal site referral
+//                     // Set marketing channel variables. channelManager will not run if referrer is in linkInternalReferrers.
+//                     s._channel = s.eVar4 = "Internal Referrer";
+//                     s.eVar25 = s.eVar26 = s.eVar27 = s.eVar28 = s.eVar29 = s.prop37 = s.eVar37 = s.prop38 = s.eVar38 = "D=v4";
+//                     s.campaign = s.eVar13 = s.prop5 = "Internal Referrer: " + s.eVar3; // campaign undefined : undefined
+//                     s.eVar5 = s.stackKeepFirst(s.eVar4, 's_eVar5', ' > ', '5', '1825');
+//                     s.eVar7 = s.eVar8 = s.eVar42 = s.eVar44 = "Other Channel";
+//                     s.eVar9 = "D=pageName";
+//                     s.eVar48 = "D=g";
+//                     break;
+//                 }
+//             }
+//         }
+//     }
+//     s.prop42 = "D=r";
+// }
 /** Referrer logic end **/
 
 function getFullDomain(str) {
@@ -1125,7 +1142,7 @@ function scFormCov(){
     s.prop30="D=v30";
     s.linkTrackVars="events,eVar30,prop30"+','+scLinkCustVars;
     s.events=s.linkTrackEvents='event2';
-    s.tl(this,'o',s.eVar30+'|complete');
+    s.tl(this,'o','formulary coverage|complete');
 }
 $('span#formularyResultsZip').waitUntilExists(scFormCov);
 
@@ -1418,3 +1435,4 @@ s.o,!1);else{s.b.removeEventListener("click",s.o,!0);s.ka=s.useForcedLinkTrackin
 b.preventDefault(),s.i=b.target,s.A=a}}}}else s.clickObject=0}catch(m){s.clickObject=0}}},s.b&&s.b.attachEvent)s.b.attachEvent("onclick",s.o);else{if(s.b&&s.b.addEventListener){if(navigator&&(navigator.userAgent.indexOf("WebKit")>=0&&s.d.createEvent||navigator.userAgent.indexOf("Firefox/2")>=0&&w.MouseEvent))s.ka=1,s.useForcedLinkTracking=1,s.b.addEventListener("click",s.o,!0);s.b.addEventListener("click",s.o,!1)}}else setTimeout(s.ya,30)};s.ya()}
 function s_gi(s){var w,k=window.s_c_il,m,i,o=s.split(","),p,n,r=0;if(k)for(m=0;!r&&m<k.length;){w=k[m];if(w._c=="s_c"&&(w.account||w.oun))if(w.account&&w.account==s)r=1;else{i=w.account?w.account:w.oun;i=w.allAccounts?w.allAccounts:i.split(",");for(p=0;p<o.length;p++)for(n=0;n<i.length;n++)o[p]==i[n]&&(r=1)}m++}r||(w=new AppMeasurement);w.setAccount?w.setAccount(s):w.sa&&w.sa(s);return w}AppMeasurement.getInstance=s_gi;window.s_objectID||(window.s_objectID=0);
 function s_pgicq(){var s=window,w=s.s_giq,k,m,i;if(w)for(k=0;k<w.length;k++)m=w[k],i=s_gi(m.oun),i.setAccount(m.un),i.setTagContainer(m.tagContainerName);s.s_giq=0}s_pgicq();
+   
