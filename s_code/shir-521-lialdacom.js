@@ -22,6 +22,7 @@ s.linkTrackEvents="None"
 /* GetActionDepth */
 //s.ActionDepthTest=true;
 s.cookieDomain=document.location.hostname;
+s.scURL=document.location.pathname;
 s.cookiePath="/";
 s.usePlugins=true
 function s_doPlugins(s) {
@@ -53,11 +54,11 @@ if(s.scURL == "/" || s.scURL == "/index.aspx"){
   s.pageName="home page";
 }
 
-console.log("part 1 "+parts[1]);
-console.log("part 2 "+parts[2]+'typeof '+typeof(parts[2]));
-console.log("part 3 "+parts[3]+'typeof '+typeof(parts[3]));
-console.log("part 4 "+parts[4]+'typeof '+typeof(parts[4]));
-console.log("part 5 "+parts[5]+'typeof '+typeof(parts[5]));
+// console.log("part 1 "+parts[1]);
+// console.log("part 2 "+parts[2]+'typeof '+typeof(parts[2]));
+// console.log("part 3 "+parts[3]+'typeof '+typeof(parts[3]));
+// console.log("part 4 "+parts[4]+'typeof '+typeof(parts[4]));
+// console.log("part 5 "+parts[5]+'typeof '+typeof(parts[5]));
 
     if(typeof(s.prop1)!="undefined" && typeof(scCat)!="undefined"){
         s.prop2=s.prop1 + scCat;
@@ -242,7 +243,6 @@ console.log("part 5 "+parts[5]+'typeof '+typeof(parts[5]));
         }
     }
     /* end - channel manager */
-
  }
 s.doPlugins=s_doPlugins
 
@@ -267,9 +267,9 @@ s.doPlugins=s_doPlugins
 scLinkCustVars="prop1,prop2,prop4,prop5,prop6,prop7,prop8,prop9,prop10,prop11,prop12,prop24,prop41,eVar45,eVar46,eVar47";
 
 //6-1, 6-8
-$('a[href*="pi.shirecontent"]').live('click',function(){
+$('div#isi a[href*="pi.shirecontent"]','div#hdr-bar a[href*="pi.shirecontent"]').live('click',function(){
     s.linkTrackVars='eVar20,events'+','+scLinkCustVars;
-    s.eVar20='download_pi guide';
+    s.eVar20='offsite download_pi guide';
     s.events=s.linkTrackEvents='event4';
     s.tl(this,'d', s.eVar20);
 })
@@ -318,15 +318,195 @@ $('a#ok_btn').live('click',function(){
 })
 //6-10
 $('a.shire[href="http://www.shire.com"]').live('click',function(){
-        s.eVar21='internal exit_shire us';
+        s.eVar21='internal exit_shire';
         s.linkTrackVars='eVar21'+','+scLinkCustVars;
         s.events=s.linkTrackEvents="";
         s.tl(this,'e', s.eVar21); 
 })
+//7-1,7-2,7-3,7-4,7-5,7-6,7-7,7-8
+localStorage.removeItem('scemail');
+$('div#emailtofriend2 input').live('click',function(){
+    s.events=s.linkTrackEvents='event3';
+    s.linkTrackVars='events,prop30,eVar30,prop34,eVar34,prop39,eVar39'+','+scLinkCustVars;
+    var scLink=$(this).attr('name');
+    if(localStorage['scemail']!='start'){
+        s.events=s.apl(s.events,'event39',',',1);
+        localStorage['scemail']='start';
+    }
+    console.log(scLink);
+    var scVal=$(this).val();
+    console.log(scVal);
+    var scField;
+    var scFormName='email a friend';
+    if(!!scVal){
+        console.log('test');
+        if(scVal=="rdoEmailPage"){
+            var scField="email this page";
+        }
+        else if(scVal=="rdoEmailSite"){
+            var scField="email this site";
+        }
+    }
+    else {
+        if(scLink=='ctl00$objEmailFriend$txtFirstName'){scField='your first name';}
+        else if(scLink=='ctl00$objEmailFriend$txtemailAddres'){scField='your email address';}
+        else if(scLink=='ctl00$objEmailFriend$txtRecipientFN'){scField='recipient first name';}
+        else if(scLink=='ctl00$objEmailFriend$txtRecipientEA'){scField='recipient email address';}
+        else if(scLink=='ctl00$objEmailFriend$btnCancel'){scField='cancel';}
+        else if(scLink=='ctl00$objEmailFriend$btnSubmit'){scField='submit';}
+    }
+    if(scField=='cancel'){
+        console.log('form cancelled');
+    }
+    else{
+        console.log(scField);
+        s.prop30=scFormName;
+        s.eVar30="D=c30";
+        s.prop34=scField;
+        s.eVar34="D=c34";
+        //s.prop39=s.prop34+'_(pii)';
+        //s.eVar39="D=c39";
+        s.tl(this,'o',scFormName+'_form field click');
+    }
+})
+function formCompleteHandler(scname){
+    var completeFormVal=scname;
+    console.log(completeFormVal);
+    if(scname=="Lialda > DTC > E-mail a Friend"){
+        s.eVar30="email a friend";
+        s.linkTrackVars='eVar30,events'+','+scLinkCustVars;
+        s.events=s.linkTrackEvents="event2";
+        s.tl(this,'o', s.eVar30+'_form complete');
+        localStorage.removeItem('scemail');
+    }
+}
+//8-1
+$('div.co-link a[href="/uc-resources.aspx"]').live('click',function(){
+    s.linkTrackVars='eVar22'+','+scLinkCustVars;
+    s.eVar22='nav_tools and resources call out';
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o', s.eVar22);
+})
+//8-2
+$('div.two-col-left a[href="/ulcerative-colitis-symptoms.aspx"]').live('click',function(){
+    s.linkTrackVars='eVar22'+','+scLinkCustVars;
+    s.eVar22='nav_learn about symptoms call out';
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o', s.eVar22);
+})
+//9-1
+if(s.scURL=="/ulcerative-colitis-symptoms.aspx"){
+    $('a[href="/lialda-safety-info.aspx#terms"]').live('click',function(event){
+        s.linkTrackVars='eVar22'+','+scLinkCustVars;
+        s.eVar22='nav_find out terms call out';
+        s.events=s.linkTrackEvents='';
+        event.stopPropagation;
+        s.tl(this,'o', s.eVar22);
+    })
+}
+//9-2
+$('div.two-col-left a[href="/ulcerative-colitis-diagnosis.aspx"]').live('click',function(){
+    s.linkTrackVars='eVar22'+','+scLinkCustVars;
+    s.eVar22='nav_find out how uc diagnosed call out';
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o', s.eVar22);
+})
+//
 
 
+//11-1
+if(s.scURL=="/what-is-lialda.aspx"){
+        $('div.co-link a[href="/support-program.aspx"]').live('click',function(){
+        s.linkTrackVars='eVar22'+','+scLinkCustVars;
+        s.eVar22='nav_learn more savings card call out';
+        s.events=s.linkTrackEvents='';
+        s.tl(this,'o', s.eVar22);
+    })
+
+    //11-2
+    $('div.cta-gray div.co-img a').live('click',function(){
+        s.linkTrackVars='eVar22'+','+scLinkCustVars;
+        s.eVar22='nav_learn more savings card jpg call out';
+        s.events=s.linkTrackEvents='';
+        s.tl(this,'o', s.eVar22);
+    })
+}
+//12-1
+if(s.scURL=="/ulcerative-colitis-doctor.aspx"){
+        $('div.co-link a[href="/support-program.aspx"]').live('click',function(){
+        s.linkTrackVars='eVar22'+','+scLinkCustVars;
+        s.eVar22='nav_learn more savings card call out';
+        s.events=s.linkTrackEvents='';
+        s.tl(this,'o', s.eVar22);
+    })
+}
 
 
+//12-2
+$('div#downloadListQuestions h3 a').live('click',function(){
+    s.linkTrackVars='eVar20,events'+','+scLinkCustVars;
+    s.eVar20='onsite download_dr discussion guide pdf';
+    s.events=s.linkTrackEvents='event4';
+    s.tl(this,'d', s.eVar20);
+})
+
+//12-3,12-4,12-5
+$('div#downloadListQuestions p a').live('click',function(){
+    var scLink=$(this).attr('href');
+    var scval;
+    s.linkTrackVars='eVar20,events'+','+scLinkCustVars;
+    if(scLink=='/media/pdf/Dr_discuss_guide_PI.pdf'){
+        scVal="onsite download_dr discussion guide with pi pdf";
+    }
+    else if(scLink=='/media/pdf/Dr_discuss_guide.pdf'){
+        scVal="onsite download_dr discussion guide pdf";
+    }
+    else if(scLink=='http://pi.shirecontent.com/PI/PDFs/Lialda_USA_ENG.pdf'){
+        scVal="offsite download_pi guide";
+    }
+    s.eVar20=scVal;
+    s.events=s.linkTrackEvents='event4';
+    s.tl(this,'d', s.eVar20);
+})
+//12-6
+$('a[href="#divMainEmailToDoctor"]').live('click',function(){
+    s.linkTrackVars='eVar22'+','+scLinkCustVars;
+    s.eVar22='nav_email the list call out';
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o', s.eVar22);
+})
+
+//13-1,13-2
+if(s.scURL=="/ulcerative-colitis-treatment-plan.aspx"){
+    $('div.cta-gray div.co-link a[href="/uc-apps.aspx"]').live('click',function(){
+        var scLinkUrl=$(this).attr('href');
+        s.linkTrackVars='eVar22'+','+scLinkCustVars;
+        s.eVar22='nav_see the recommended apps call out';
+        s.events=s.linkTrackEvents='';
+        s.tl(this,'o', s.eVar22);
+    })
+    $('div.cta-gray div.co-link a[href="/support-program.aspx"]').live('click',function(){
+        var scLinkUrl=$(this).attr('href');
+        s.linkTrackVars='eVar22'+','+scLinkCustVars;
+        s.eVar22='nav_learn more patient support program call out';
+        s.events=s.linkTrackEvents='';
+        s.tl(this,'o', s.eVar22);
+    })
+}
+//14
+if(s.scURL=="/uc-resources.aspx"){
+    $('div.gallery.bump-top-30 div a[href="/support-program.aspx"]').live('click',function(){
+    console.log('click');
+    var scText=$(this).text().toLowerCase();
+    console.log(scText);
+    s.linkTrackVars='eVar22'+','+scLinkCustVars;
+    s.eVar22=scText;
+    s.events=s.linkTrackEvents='';
+    s.tl(this,'o', s.eVar22);
+    })
+
+
+}
 
 //RegistrationForm
 //sample function call -dcupdate
