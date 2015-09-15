@@ -2,7 +2,7 @@
 // this file must contain a defined s_account for app meas code to run as well.
 // Must contain s = new AppMeasurement();
 // Include s.account=s_account in the Additional Configuration box within the SiteCatalyst Pageload Tag Attributes
-// library|lialda.com|mobile|shir-522
+// library|lialda.com|mobile|shir-522|combined
 s = new AppMeasurement();
 s.account = bt_data('data|reportsuiteid');
 
