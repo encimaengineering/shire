@@ -2,7 +2,7 @@
 // this file must contain a defined s_account for app meas code to run as well.
 // Must contain s = new AppMeasurement();
 // Include s.account=s_account in the Additional Configuration box within the SiteCatalyst Pageload Tag Attributes
-// library|lialda.com|mobile|shir-522|combined
+// library|lialda.com|mobile|shir-522
 s = new AppMeasurement();
 s.account = bt_data('data|reportsuiteid');
 
@@ -855,7 +855,7 @@ $('div#utility li:last a').live('click',function(){
 // s.tl(this,'e', s.eVar21);
 // })
 //9-1-Mobile
-$('div.co.co-files img[src="/media/images/btn-arrow-right.jpg"]').live('click',function(){
+$('div.co.co-files').live('click',function(){
 	s.linkTrackVars='eVar22,prop22'+','+scLinkCustVars;
 	s.prop22='nav|find info about uc|';
 	s.eVar22='D=c22';
@@ -863,7 +863,7 @@ $('div.co.co-files img[src="/media/images/btn-arrow-right.jpg"]').live('click',f
 	s.tl(this,'o', s.prop22);
 })
 //9-2-Mobile
-$('div.co.co-pig img[src="/media/images/btn-arrow-right.jpg"]').live('click',function(){
+$('div.co.co-pig').live('click',function(){
 	s.linkTrackVars='eVar22,prop22'+','+scLinkCustVars;
 	s.prop22='nav|sign up for savings card';
 	s.eVar22='D=c22';
@@ -871,7 +871,7 @@ $('div.co.co-pig img[src="/media/images/btn-arrow-right.jpg"]').live('click',fun
 	s.tl(this,'o', s.prop22);
 })
 //9-3-Mobile
-$('div.co.co-lightbulb img[src="/media/images/btn-arrow-right.jpg"]').live('click',function(){
+$('div.co.co-lightbulb').live('click',function(){
 	s.linkTrackVars='eVar22,prop22'+','+scLinkCustVars;
 	s.prop22='nav|talk to your doctor about lialda';
 	s.eVar22='D=c22';
@@ -879,7 +879,7 @@ $('div.co.co-lightbulb img[src="/media/images/btn-arrow-right.jpg"]').live('clic
 	s.tl(this,'o', s.prop22);
 })
 //9-4-Mobile
-$('div.co.co-flag img[src="/media/images/btn-arrow-right.jpg"]').live('click',function(){
+$('div.co.co-flag').live('click',function(){
 	s.linkTrackVars='eVar22,prop22'+','+scLinkCustVars;
 	s.prop22='nav|learn about the lialda direct program';
 	s.eVar22='D=c22';
